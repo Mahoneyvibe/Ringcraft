@@ -1,0 +1,17 @@
+# Node / Firebase
+node_modules/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Env / secrets
+.env
+.env.*
+*.local
+
+# IDX
+.idx/cache/
+.idx/.tmp/
+
+# OS
+.DS_Store
