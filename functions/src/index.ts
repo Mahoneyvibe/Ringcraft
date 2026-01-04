@@ -12,6 +12,7 @@
  */
 
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -19,6 +20,21 @@ admin.initializeApp();
 // Export Firestore and Auth references for use in function modules
 export const db = admin.firestore();
 export const auth = admin.auth();
+
+/**
+ * Helper: Check if the proposal system is paused
+ * Required in: createProposal, respondToProposal
+ * Implementation Plan §2.3
+ */
+export async function checkKillSwitch(): Promise<void> {
+  const settings = await db.doc("admin/settings").get();
+  if (settings.data()?.proposalKillSwitch) {
+    throw new functions.https.HttpsError(
+      "unavailable",
+      "Proposal system is temporarily paused"
+    );
+  }
+}
 
 /**
  * Function stubs - to be implemented in later phases
