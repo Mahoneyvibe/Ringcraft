@@ -1,0 +1,132 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════
+    // HELPER FUNCTIONS
+    // ═══════════════════════════════════════════
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isPlatformAdmin() {
+      return isAuthenticated() &&
+             request.auth.token.isPlatformAdmin == true;
+    }
+
+    function isClubMember(clubId) {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/clubs/$(clubId)/members/$(request.auth.uid));
+    }
+
+    function isAnyClubMember() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.clubMemberships.size() > 0;
+    }
+
+    // ═══════════════════════════════════════════
+    // USERS
+    // ═══════════════════════════════════════════
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if request.auth.uid == userId || isPlatformAdmin();
+      allow delete: if false;  // Never delete users
+    }
+
+    // ═══════════════════════════════════════════
+    // CLUBS
+    // ═══════════════════════════════════════════
+    match /clubs/{clubId} {
+      allow read: if isAuthenticated();
+      allow create: if false;  // Pre-seeded only
+      allow update: if false;  // Cloud Functions only
+      allow delete: if false;  // Clubs never deleted
+
+      // Members subcollection
+      match /members/{memberId} {
+        allow read: if isAuthenticated();
+        allow write: if false;  // Cloud Functions only
+      }
+
+      // Boxers subcollection
+      match /boxers/{boxerId} {
+        allow read: if isAnyClubMember();  // Cross-club discovery
+        allow create: if isClubMember(clubId);
+        allow update: if isClubMember(clubId) &&
+                        request.resource.data.boxerId == resource.data.boxerId;  // boxerId immutable
+        allow delete: if false;  // Archive, never delete
+      }
+
+      // Roster imports subcollection
+      match /rosterImports/{importId} {
+        allow read: if isClubMember(clubId);
+        allow create: if isClubMember(clubId);
+        allow update: if false;  // Cloud Functions only
+        allow delete: if false;
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    // SHOWS
+    // ═══════════════════════════════════════════
+    match /shows/{showId} {
+      allow read: if isAuthenticated();
+      allow create: if isClubMember(request.resource.data.hostClubId);
+      allow update: if isClubMember(resource.data.hostClubId) &&
+                      request.resource.data.hostClubId == resource.data.hostClubId;
+      allow delete: if false;
+
+      match /slots/{slotId} {
+        allow read: if isAuthenticated();
+        allow create: if isClubMember(get(/databases/$(database)/documents/shows/$(showId)).data.hostClubId);
+        allow update: if false;  // Cloud Functions only (state transitions)
+        allow delete: if false;
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    // PROPOSALS - Cloud Functions Only
+    // ═══════════════════════════════════════════
+    match /proposals/{proposalId} {
+      allow read: if isAuthenticated() && (
+                    resource.data.fromClubId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.clubMemberships ||
+                    resource.data.toClubId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.clubMemberships ||
+                    isPlatformAdmin()
+                  );
+      allow write: if false;  // Cloud Functions only
+    }
+
+    // ═══════════════════════════════════════════
+    // BOUTS - Cloud Functions Only
+    // ═══════════════════════════════════════════
+    match /bouts/{boutId} {
+      allow read: if isAuthenticated();
+      allow write: if false;  // Cloud Functions only
+    }
+
+    // ═══════════════════════════════════════════
+    // DEEPLINK TOKENS - Cloud Functions Only
+    // ═══════════════════════════════════════════
+    match /deeplinkTokens/{tokenId} {
+      allow read: if false;   // Never exposed to clients
+      allow write: if false;  // Cloud Functions only
+    }
+
+    // ═══════════════════════════════════════════
+    // ADMIN - Platform Admin Only
+    // ═══════════════════════════════════════════
+    match /admin/settings {
+      allow read: if isAuthenticated();  // Kill switch status visible
+      allow write: if false;  // Cloud Functions only
+    }
+
+    match /admin/auditLogs/{logId} {
+      allow read: if isPlatformAdmin();
+      allow create: if false;  // Cloud Functions only
+      allow update: if false;  // Immutable
+      allow delete: if false;  // Immutable
+    }
+  }
+}
