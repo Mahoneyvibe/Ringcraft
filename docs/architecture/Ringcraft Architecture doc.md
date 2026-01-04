@@ -128,15 +128,38 @@ Age is never stored. Age is always computed relative to show date.
 
 #### **Proposals**
 
-* Represent negotiation state  
-* Readable only by sender, recipient, and admin  
+* Represent negotiation state
+* Readable only by sender, recipient, and admin
 * Contain **immutable boxer snapshots**
 
 #### **Bouts**
 
-* Created on proposal acceptance  
-* Canonical representation of agreed bout  
+* Created on proposal acceptance
+* Canonical representation of agreed bout
 * Non-authoritative but auditable
+
+**Bout Lifecycle:**
+`agreed → completed | did_not_happen | cancelled`
+
+* `agreed` — Bout accepted, awaiting show date
+* `completed` — Result recorded by hosting club
+* `did_not_happen` — Bout was agreed but never took place (e.g., boxer withdrawal on day, medical stoppage before bout)
+* `cancelled` — Bout cancelled in advance (before show date)
+
+**Result Fields (populated on completion):**
+
+* `winnerId` — Boxer ID of winner
+* `loserId` — Boxer ID of loser
+* `recordedBy` — User ID who recorded result
+* `recordedAt` — Timestamp of result recording
+* `lastEditedBy` — User ID of last editor (if corrected)
+* `lastEditedAt` — Timestamp of last edit (if corrected)
+
+**Result Correction Window:**
+
+* Hosting club may edit results within 7 days of recording
+* After 7 days, corrections require platform admin intervention
+* All corrections are audited
 
 ---
 
@@ -258,6 +281,33 @@ Create proposal → send deep link → accept/decline → bout \+ slot update
 
 Detect issue → correct data → audit log → notify clubs if needed
 
+### **7.6 Bout Result Recording**
+
+Show date passes → hosting club prompted to record results → for each bout:
+
+**If result recorded by hosting club:**
+1. Hosting club selects winner for each bout on their show card
+2. Cloud Function validates and updates bout status to `completed`
+3. Winner's `wins` counter incremented
+4. Loser's `losses` counter incremented
+5. Both boxers' `bouts` counter incremented
+6. Opposing club notified: "Result recorded — no action needed"
+7. Audit log written
+
+**If result NOT recorded by hosting club:**
+1. Opposing club prompted to update boxer record manually
+2. Club manually adjusts W/L on their boxer's profile
+3. Bout remains in `agreed` status (stale)
+
+**Result correction (within 7 days):**
+1. Hosting club edits result
+2. Previous winner's `wins` decremented, `losses` incremented
+3. Previous loser's `losses` decremented, `wins` incremented
+4. Audit log records correction with before/after state
+
+**Periodic review prompt:**
+Clubs prompted to review and refresh boxer records periodically until result automation is fully adopted.
+
 ---
 
 ## **8\. Offline & Reliability Strategy**
@@ -340,18 +390,25 @@ Rules:
 * Derived data is computed client-side or in Cloud Functions  
 * Firestore queries must not attempt to compute derived values
 
-**C) System-Generated Data (Authoritative Within Ringcraft)**  
+**C) System-Generated Data (Authoritative Within Ringcraft)**
 Examples:
 
-* Proposal status  
-* Bout status  
-* Slot state  
+* Proposal status
+* Bout status
+* Slot state
+* Bout result (winner/loser, once recorded)
 * Audit logs
 
 Rules:
 
-* System-generated data must not be directly mutable by clients  
+* System-generated data must not be directly mutable by clients
 * State transitions must be atomic and validated
+
+**Clarification — Bout Results vs Boxer W/L:**
+
+* **Bout result** is system-generated: recorded via Cloud Function, immutable after correction window, authoritative for that specific bout within Ringcraft
+* **Boxer W/L counters** remain declared data: auto-incremented by Ringcraft bout results, but manually editable by clubs to account for pre-Ringcraft history and bouts arranged outside the platform
+* This hybrid approach enables automation while preserving club control over their boxer records
 
 **D) Non-Authoritative Indicators**  
 Examples:

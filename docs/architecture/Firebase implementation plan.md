@@ -159,40 +159,56 @@ Authority: Execution reference (must not violate architecture or PRD)
 
   1.5 bouts (Top-Level)
 
-  bouts/{boutId}  
-  ├── boutId: string  
-  ├── proposalId: string             \# Source proposal  
-  ├── showId: string  
-  ├── slotId: string  
-  ├── showDate: timestamp  
-  │  
-  ├── redCorner: {                   \# Immutable snapshot  
-  │     boxerId: string  
-  │     firstName: string  
-  │     lastName: string  
-  │     dob: timestamp  
-  │     clubId: string  
-  │     clubName: string  
-  │     declaredWeight: number  
-  │     declaredBouts: number  
-  │   }  
-  │  
-  ├── blueCorner: {                  \# Immutable snapshot  
-  │     boxerId: string  
-  │     firstName: string  
-  │     lastName: string  
-  │     dob: timestamp  
-  │     clubId: string  
-  │     clubName: string  
-  │     declaredWeight: number  
-  │     declaredBouts: number  
-  │   }  
-  │  
-  ├── status: 'confirmed' | 'cancelled' | 'voided'  
-  ├── statusReason: string | null  
-  ├── createdAt: timestamp  
-  └── updatedAt: timestamp  
-  Invariant: Clients cannot write to bouts. Created only via Cloud Function on proposal acceptance.
+  bouts/{boutId}
+  ├── boutId: string
+  ├── proposalId: string             \# Source proposal
+  ├── showId: string
+  ├── slotId: string
+  ├── showDate: timestamp
+  │
+  ├── redCorner: {                   \# Immutable snapshot
+  │     boxerId: string
+  │     firstName: string
+  │     lastName: string
+  │     dob: timestamp
+  │     clubId: string
+  │     clubName: string
+  │     declaredWeight: number
+  │     declaredBouts: number
+  │   }
+  │
+  ├── blueCorner: {                  \# Immutable snapshot
+  │     boxerId: string
+  │     firstName: string
+  │     lastName: string
+  │     dob: timestamp
+  │     clubId: string
+  │     clubName: string
+  │     declaredWeight: number
+  │     declaredBouts: number
+  │   }
+  │
+  ├── status: 'agreed' | 'completed' | 'did_not_happen' | 'cancelled'
+  ├── statusReason: string | null
+  │
+  ├── result: {                      \# Populated on completion
+  │     winnerId: string             \# boxerId of winner
+  │     loserId: string              \# boxerId of loser
+  │     recordedBy: string           \# userId who recorded
+  │     recordedAt: timestamp
+  │     lastEditedBy: string | null  \# userId if corrected
+  │     lastEditedAt: timestamp | null
+  │   } | null
+  │
+  ├── createdAt: timestamp
+  └── updatedAt: timestamp
+
+  Invariants:
+  - Clients cannot write to bouts. All mutations via Cloud Functions only.
+  - Created on proposal acceptance with status 'agreed'.
+  - Result can only be recorded after showDate has passed.
+  - Hosting club may correct result within 7 days of recordedAt.
+  - After 7 days, only platform admin can correct.
 
   1.6 deeplinkTokens (Top-Level)
 
@@ -249,9 +265,12 @@ Authority: Execution reference (must not violate architecture or PRD)
   | expireProposals     | Scheduled (hourly) | Mark expired proposals                    | proposals, slots, deeplinkTokens                   |  
   | createShow          | HTTPS Callable     | Validate host club, create show           | shows, auditLogs                                   |  
   | updateSlotStatus    | Internal Only      | Atomic slot state transitions             | slots                                              |  
-  | adminVoidBout       | HTTPS Callable     | Admin voids a bout                        | bouts, slots, auditLogs                            |  
-  | adminSuspendClub    | HTTPS Callable     | Admin suspends club                       | clubs, auditLogs                                   |  
+  | adminVoidBout       | HTTPS Callable     | Admin voids a bout                        | bouts, slots, auditLogs                            |
+  | adminSuspendClub    | HTTPS Callable     | Admin suspends club                       | clubs, auditLogs                                   |
   | adminPauseProposals | HTTPS Callable     | Toggle kill switch                        | admin/settings, auditLogs                          |
+  | recordBoutResult    | HTTPS Callable     | Host club records W/L result              | bouts, boxers (W/L counters), auditLogs            |
+  | correctBoutResult   | HTTPS Callable     | Host club or admin corrects result        | bouts, boxers (W/L counters), auditLogs            |
+  | markBoutDidNotHappen| HTTPS Callable     | Mark bout as did not take place           | bouts, auditLogs                                   |
 
   2.2 State Transition Rules (Cloud Functions Only)
 
@@ -271,12 +290,27 @@ Authority: Execution reference (must not violate architecture or PRD)
                                       ──\[expireProposals\]──► open  
   secured ──\[adminVoidBout\]──► open
 
-  Proposal Lifecycle:  
-  proposed ──\[respondToProposal:accept\]──► accepted  
-           ──\[respondToProposal:decline\]──► declined  
-           ──\[withdrawProposal\]──► withdrawn  
-           ──\[expireProposals\]──► expired  
-           ──\[adminVoidProposal\]──► voided
+  Proposal Lifecycle:
+  proposed ──[respondToProposal:accept]──► accepted
+           ──[respondToProposal:decline]──► declined
+           ──[withdrawProposal]──► withdrawn
+           ──[expireProposals]──► expired
+           ──[adminVoidProposal]──► voided
+
+  Bout Lifecycle:
+  (created on proposal acceptance)
+  agreed ──[recordBoutResult]──► completed
+         ──[markBoutDidNotHappen]──► did_not_happen
+         ──[adminVoidBout]──► cancelled
+
+  Result Correction Flow:
+  completed ──[correctBoutResult within 7 days]──► completed (result updated, counters adjusted)
+  completed ──[correctBoutResult by admin]──► completed (no time restriction)
+
+  Note: On recordBoutResult, the following boxer fields are atomically updated:
+  - Winner: declaredWins += 1, declaredBouts += 1
+  - Loser: declaredLosses += 1, declaredBouts += 1
+  On correctBoutResult, previous increments are reversed before applying new result.
 
   2.3 Kill Switch Check (Required in Functions)
 
@@ -490,8 +524,12 @@ Authority: Execution reference (must not violate architecture or PRD)
   | Clients cannot mutate proposals/bouts/slots/tokens | Security rules: allow write: if false                |  
   | Deep links resolved via CF only                    | deeplinkTokens not readable by clients               |  
   | Admin via custom claim                             | isPlatformAdmin claim, separate from club membership |  
-  | Boxer snapshots immutable                          | Stored at proposal creation, never updated           |  
+  | Boxer snapshots immutable                          | Stored at proposal creation, never updated           |
   | Dev/prod separation                                | Separate Firebase projects required                  |
+  | Bout results via CF only                           | recordBoutResult, correctBoutResult, markBoutDidNotHappen |
+  | Result correction window enforced                  | 7 days for hosting club; admin unrestricted          |
+  | Result corrections audited                         | Before/after state logged to auditLogs               |
+  | Boxer W/L counters atomically updated              | On result record/correct, counters adjusted in same transaction |
 
   - docs/architecture/Firebase implementation plan.md — Concrete Firebase execution blueprint (derived, non-authoritative)
 

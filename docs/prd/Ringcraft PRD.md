@@ -157,11 +157,35 @@ These issues result in administrative burnout, under-filled or cancelled shows, 
 
 ### **3.6 Show Feed & Show Management**
 
-* Create and manage shows  
-* Define open slots  
-* National show feed  
-* “Check my roster” against open slots  
+* Create and manage shows
+* Define open slots
+* National show feed
+* "Check my roster" against open slots
 * Update show cards on bout acceptance
+
+**Bout Results Capture (Show Close-Out)**
+
+* Hosting club records bout results as part of show close-out
+* Binary outcome per bout: Win or Loss (no draws in amateur boxing)
+* Bouts that don't take place (e.g., boxer withdrawal on day) marked as "did not happen" — no W/L impact
+* On result submission:
+  * Bout record updated with outcome
+  * Both boxers' win/loss records updated automatically
+  * Opposing club notified of recorded result (no action required)
+* Show organiser is authoritative for results at their event
+* Low-friction flow integrated into existing bout card view
+
+**Result Correction & Fallback**
+
+* Hosting club may correct results within 7 days of recording
+* After 7 days, corrections require platform admin
+* If hosting club does not record results, opposing club is prompted to update their boxer's record manually
+
+**Boxer Record Management**
+
+* Boxer W/L counters remain editable by owning club
+* Enables manual updates for bouts arranged outside Ringcraft
+* Clubs prompted to periodically review and refresh boxer records until result automation is fully adopted
 
 ---
 

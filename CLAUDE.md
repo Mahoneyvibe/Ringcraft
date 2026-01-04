@@ -41,11 +41,15 @@ users                          # Global identities
 clubs                          # Primary entities (pre-seeded)
   └── members                  # Club membership
   └── boxers                   # Athletes (never shared across clubs)
+        ├── declaredWins       # Auto-incremented on bout result, manually editable
+        ├── declaredLosses     # Auto-incremented on bout result, manually editable
+        └── declaredBouts      # Auto-incremented on bout result, manually editable
   └── rosterImports            # CSV upload tracking
 shows                          # Hosting events
   └── slots                    # Open bout positions
 proposals                      # Negotiation state
-bouts                          # Agreed matches
+bouts                          # Agreed matches (status: agreed → completed | did_not_happen | cancelled)
+  └── result                   # winnerId, loserId, recordedBy, recordedAt, lastEditedBy, lastEditedAt
 deeplinkTokens                 # Single-use response links
 admin/settings                 # Kill switches
 admin/auditLogs                # Immutable audit trail
@@ -55,8 +59,13 @@ admin/auditLogs                # Immutable audit trail
 
 - **Declared data** (club-provided): Editable, not validated, not authoritative (boxer weights, bout totals)
 - **Derived data** (computed): Never persisted (age, eligibility)
-- **System-generated** (authoritative within Ringcraft): Not client-writable (proposal/bout status)
+- **System-generated** (authoritative within Ringcraft): Not client-writable (proposal/bout status, bout results)
 - **Non-authoritative indicators**: Advisory only (compliance filters, match recommendations)
+
+**Bout Results vs Boxer W/L (Hybrid Model):**
+- **Bout result** is system-generated: recorded via Cloud Function, authoritative for that bout
+- **Boxer W/L counters** remain declared data: auto-incremented on result, but manually editable by clubs for pre-Ringcraft history and bouts arranged outside the platform
+- **Periodic review prompts**: Clubs are prompted to review and refresh boxer records until result automation is fully adopted
 
 ## Build Order
 
@@ -68,7 +77,8 @@ Implementation must follow this sequence:
 5. Phase 4: Discovery & Matchmaking (queries retrieve candidates, filtering at runtime)
 6. Phase 5: Proposals & Deep Links (immutable snapshots, token security)
 7. Phase 6: Shows & Slots (atomic slot+bout updates)
-8. Phase 7: Admin & Safety Controls (read-first dashboard, kill switches)
+8. Phase 6.5: Bout Result Recording (result capture, W/L counter updates, corrections)
+9. Phase 7: Admin & Safety Controls (read-first dashboard, kill switches, result correction beyond 7 days)
 
 ## Key Firestore Security Rules Principles
 

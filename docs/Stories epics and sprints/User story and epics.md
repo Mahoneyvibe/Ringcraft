@@ -320,7 +320,95 @@ Ensure operational safety and recovery.
 
 ---
 
+## **EPIC 10 — Bout Results & Record Management**
+
+### **Goal**
+
+Automate boxer record updates through show result capture, reducing manual data entry.
+
+### **Story 10.1 — Record Bout Result**
+
+**As a** hosting club official
+**I want** to record bout results after my show
+**So that** boxer records are updated automatically.
+
+**Acceptance Criteria**
+
+* Show organiser can record Win/Loss for each bout on their show card
+* Only bouts with status `agreed` can have results recorded
+* Results can only be recorded after showDate has passed
+* On result submission:
+  * Bout status transitions to `completed`
+  * Winner's `declaredWins` and `declaredBouts` are incremented
+  * Loser's `declaredLosses` and `declaredBouts` are incremented
+  * Opposing club is notified
+* All result recordings are audited
+* **Result recording occurs only via Cloud Function** (`recordBoutResult`)
+
+---
+
+### **Story 10.2 — Mark Bout Did Not Happen**
+
+**As a** hosting club official
+**I want** to mark a bout that didn't take place
+**So that** it doesn't affect boxer W/L records.
+
+**Acceptance Criteria**
+
+* Show organiser can mark bout as `did_not_happen`
+* No changes to boxer W/L counters
+* Bout is closed out cleanly
+* Reason may be optionally captured
+* **Status transition occurs only via Cloud Function** (`markBoutDidNotHappen`)
+
+---
+
+### **Story 10.3 — Correct Bout Result**
+
+**As a** hosting club official
+**I want** to correct a result I entered incorrectly
+**So that** boxer records remain accurate.
+
+**Acceptance Criteria**
+
+* Hosting club may correct within 7 days of recording
+* Correction reverses previous counter increments before applying new result
+* After 7 days, only platform admin can correct
+* All corrections are audited with before/after state
+* **Correction occurs only via Cloud Function** (`correctBoutResult`)
+
+---
+
+### **Story 10.4 — Manually Edit Boxer Record**
+
+**As a** club official
+**I want** to manually edit my boxer's W/L record
+**So that** I can capture pre-Ringcraft history and bouts outside the platform.
+
+**Acceptance Criteria**
+
+* Owning club can edit `declaredWins`, `declaredLosses`, `declaredBouts` directly
+* Edits are audited with before/after values
+* System-incremented values can be manually adjusted
+* This is existing functionality — no new implementation required, but must not be locked by result automation
+
+---
+
+### **Story 10.5 — Periodic Boxer Record Review Prompt**
+
+**As a** club official
+**I want** to be reminded to review my boxers' records
+**So that** records stay accurate while result automation is being adopted.
+
+**Acceptance Criteria**
+
+* Clubs receive periodic prompts (mechanism TBD: in-app, notification)
+* Prompt encourages review and refresh of boxer W/L data
+* This is a transitional feature until result capture is fully adopted
+
+---
+
 ## **Status**
 
-**Epics & Stories v1.1 — Ready for Sprint Execution**
+**Epics & Stories v1.2 — Updated with Epic 10 (Bout Results)**
 

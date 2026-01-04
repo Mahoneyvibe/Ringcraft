@@ -96,18 +96,43 @@ If you find yourself wanting to store `isEligible`, stop.
 
 ### **Phase 6 — Shows & Slots**
 
-* Shows created by host club  
-* Slots transition only via accepted proposals  
-* Slot \+ bout updates must be atomic
+* Shows created by host club
+* Slots transition only via accepted proposals
+* Slot + bout updates must be atomic
+
+---
+
+### **Phase 6.5 — Bout Result Recording**
+
+* Hosting club records bout results after show date
+* Result = binary Win/Loss (no draws in amateur boxing)
+* `did_not_happen` status for bouts that don't take place
+* Cloud Functions: `recordBoutResult`, `correctBoutResult`, `markBoutDidNotHappen`
+* On result submission:
+  * Bout status → `completed`
+  * Winner's `declaredWins` += 1, `declaredBouts` += 1
+  * Loser's `declaredLosses` += 1, `declaredBouts` += 1
+  * Opposing club notified
+  * Audit log written
+
+**Correction rules:**
+* Hosting club may correct within 7 days of recording
+* After 7 days, only platform admin can correct
+* Corrections reverse previous counter increments before applying new result
+
+**Important:** Boxer W/L counters remain declared data (manually editable by clubs for pre-Ringcraft history). The system auto-increments but does not lock.
+
+**Periodic review prompts:** Clubs are prompted to review and refresh boxer records until result automation is fully adopted. This is a transitional safety mechanism.
 
 ---
 
 ### **Phase 7 — Admin & Safety Controls**
 
-* Admin dashboard (read-first)  
-* System settings editor (`admin/settings`)  
-* Proposal kill switch  
+* Admin dashboard (read-first)
+* System settings editor (`admin/settings`)
+* Proposal kill switch
 * Audit log viewer
+* Result correction authority (beyond 7-day window)
 
 Admin UI should be functional, not polished.
 
@@ -115,11 +140,13 @@ Admin UI should be functional, not polished.
 
 ## **3\. Explicit DO NOT List (Non-Negotiable)**
 
-* ❌ Do not store derived data (age, eligibility)  
-* ❌ Do not let clients update proposal, bout, or slot state  
-* ❌ Do not expose boxer data publicly  
-* ❌ Do not skip audit logging for admin actions  
+* ❌ Do not store derived data (age, eligibility)
+* ❌ Do not let clients update proposal, bout, or slot state
+* ❌ Do not let clients directly write bout result fields
+* ❌ Do not expose boxer data publicly
+* ❌ Do not skip audit logging for admin actions or result corrections
 * ❌ Do not merge dev and prod environments
+* ❌ Do not lock boxer W/L counters (they remain manually editable)
 
 ---
 

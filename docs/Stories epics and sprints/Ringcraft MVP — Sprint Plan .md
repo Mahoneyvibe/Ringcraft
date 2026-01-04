@@ -113,13 +113,33 @@ This plan supersedes Sprint Plan v0.1.
 
 ### **Included Stories**
 
-* Epic 8.1 — Create a Show  
-* Epic 8.2 — View National Show Feed  
+* Epic 8.1 — Create a Show
+* Epic 8.2 — View National Show Feed
 * Epic 8.3 — Fill Show Slots
 
 ### **Exit Criteria**
 
 * Show card can be partially filled
+
+---
+
+## **Sprint 5.5 — Bout Result Recording**
+
+**Objective:** Enable post-show result capture and boxer record automation.
+
+### **Included Stories**
+
+* Epic 10.1 — Record Bout Result
+* Epic 10.2 — Mark Bout Did Not Happen
+* Epic 10.3 — Correct Bout Result (hosting club within 7 days)
+* Epic 10.4 — Manually Edit Boxer Record (confirm existing capability not locked)
+
+### **Exit Criteria**
+
+* Hosting club can record bout results after show
+* Boxer W/L counters update automatically
+* Results can be corrected within 7-day window
+* Opposing club is notified of recorded results
 
 ---
 
@@ -129,13 +149,16 @@ This plan supersedes Sprint Plan v0.1.
 
 ### **Included Stories**
 
-* Epic 9.1 — Admin Dashboard  
-* Epic 9.2 — Manage System Settings  
-* Epic 10.x — Audit Logging & Failure Handling
+* Epic 9.1 — Admin Dashboard
+* Epic 9.2 — Manage System Settings
+* Epic 10.3 — Correct Bout Result (admin authority beyond 7 days)
+* Epic 10.5 — Periodic Boxer Record Review Prompt
 
 ### **Exit Criteria**
 
 * Admin can inspect and recover from common issues
+* Admin can correct bout results beyond 7-day window
+* Clubs receive prompts to review boxer records
 
 ---
 
@@ -143,13 +166,16 @@ This plan supersedes Sprint Plan v0.1.
 
 MVP is complete when the following loop works end-to-end:
 
-* Club claimed  
-* Roster confirmed  
-* Match found  
-* Proposal sent and accepted via deep link  
-* Admin can audit and intervene
+* Club claimed
+* Roster confirmed
+* Match found
+* Proposal sent and accepted via deep link
+* Show created with slots filled
+* Bout results recorded after show
+* Boxer W/L records updated automatically
+* Admin can audit and intervene (including result corrections beyond 7 days)
 
 ---
 
-**Sprint Plan v1.1 — Authoritative**
+**Sprint Plan v1.2 — Updated with Bout Results (Sprint 5.5)**
 
