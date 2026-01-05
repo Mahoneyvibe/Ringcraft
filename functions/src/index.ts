@@ -31,6 +31,11 @@ export { onUserCreate } from "./auth/onUserCreate";
 // ═══════════════════════════════════════════
 export { setAdminClaim } from "./admin/setAdminClaim";
 
+// ═══════════════════════════════════════════
+// CLUB FUNCTIONS (Story 2.1)
+// ═══════════════════════════════════════════
+export { searchClubs } from "./clubs/searchClubs";
+
 /**
  * Helper: Check if the proposal system is paused
  * Required in: createProposal, respondToProposal

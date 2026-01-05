@@ -1,0 +1,124 @@
+{
+  "clubs": [
+    {
+      "clubId": "repton-abc",
+      "name": "Repton Amateur Boxing Club",
+      "region": "London",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "dale-youth-abc",
+      "name": "Dale Youth Amateur Boxing Club",
+      "region": "London",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "jimmy-egan-abc",
+      "name": "Jimmy Egan's Boxing Academy",
+      "region": "North West",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "hooks-abc",
+      "name": "Hooks Amateur Boxing Club",
+      "region": "North West",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "sheffield-city-abc",
+      "name": "Sheffield City Amateur Boxing Club",
+      "region": "Yorkshire",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "steel-city-abc",
+      "name": "Steel City Amateur Boxing Club",
+      "region": "Yorkshire",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "eastside-abc",
+      "name": "Eastside Amateur Boxing Club",
+      "region": "West Midlands",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "lochend-abc",
+      "name": "Lochend Amateur Boxing Club",
+      "region": "Scotland",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "cardiff-abc",
+      "name": "Cardiff Amateur Boxing Club",
+      "region": "Wales",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "birtley-abc",
+      "name": "Birtley Amateur Boxing Club",
+      "region": "North East",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "bristol-abc",
+      "name": "Bristol Amateur Boxing Club",
+      "region": "South West",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    },
+    {
+      "clubId": "nottingham-abc",
+      "name": "Nottingham Amateur Boxing Club",
+      "region": "East Midlands",
+      "status": "unclaimed",
+      "claimedBy": null,
+      "claimedAt": null,
+      "contactEmail": null,
+      "contactPhone": null
+    }
+  ]
+}

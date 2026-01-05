@@ -1,0 +1,42 @@
+schema: 1
+story: "2.1"
+story_title: "Pre-Seeded Club Directory"
+gate: PASS
+status_reason: "Both acceptance criteria met with solid security implementation. Clubs seeded with status=unclaimed, searchable by authenticated users with sensitive fields excluded."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-01-05T00:00:00Z"
+
+waiver: { active: false }
+
+top_issues: []
+
+quality_score: 100
+
+evidence:
+  tests_reviewed: 29
+  risks_identified: 0
+  trace:
+    ac_covered: [1, 2]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: "Auth required, contactPhone excluded via toSearchResult(), clients cannot create/update/delete clubs"
+  performance:
+    status: PASS
+    notes: "Region filter at query level, in-memory name filter acceptable for MVP club count (~200-500)"
+  reliability:
+    status: PASS
+    notes: "Seed script idempotent, proper error handling in Cloud Function"
+  maintainability:
+    status: PASS
+    notes: "Clean type separation, consistent patterns from Sprint 0, well-documented MVP approach"
+
+recommendations:
+  immediate: []
+  future:
+    - action: "Add pagination when club count exceeds ~500"
+      refs: ["functions/src/clubs/searchClubs.ts"]
+    - action: "Consider Algolia/Typesense for full-text search"
+      refs: ["functions/src/clubs/searchClubs.ts:16-18"]

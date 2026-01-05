@@ -72,8 +72,8 @@ Phase 1 (Core Data Skeleton) from the Code Execution Brief is absorbed into this
 ### **Exit Criteria**
 
 * ✅ Firestore rules deployed
-* ⬚ Users can authenticate (creates `users/{userId}` on first login)
-* ⬚ Platform admin can be designated (`isPlatformAdmin` claim)
+* ✅ Users can authenticate (creates `users/{userId}` on first login)
+* ✅ Platform admin can be designated (`isPlatformAdmin` claim)
 
 ---
 
