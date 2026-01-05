@@ -1,4 +1,4 @@
-# **Product Requirements Document (PRD) — Ringcraft**
+# **Product Requirements Document (PRD) — FirstBell**
 
 ---
 
@@ -6,9 +6,9 @@
 
 ### **Product Description**
 
-Ringcraft is an AI-assisted matchmaking and show-building platform for UK amateur boxing clubs. It replaces fragmented manual workflows—static databases, phone calls, and unstructured messaging—with a single coordination utility that enables clubs to find, negotiate, and secure compliant amateur bouts quickly and reliably.
+FirstBell is an AI-assisted matchmaking and show-building platform for UK amateur boxing clubs. It replaces fragmented manual workflows—static databases, phone calls, and unstructured messaging—with a single coordination utility that enables clubs to find, negotiate, and secure compliant amateur bouts quickly and reliably.
 
-Ringcraft operates as a **non-authoritative coordination layer** at launch. It does not replace England Boxing’s official systems nor claim regulatory authority. Instead, it embeds England Boxing technical rules directly into the matchmaking process to prevent non-compliant bouts from being proposed.
+FirstBell operates as a **non-authoritative coordination layer** at launch. It does not replace England Boxing’s official systems nor claim regulatory authority. Instead, it embeds England Boxing technical rules directly into the matchmaking process to prevent non-compliant bouts from being proposed.
 
 The product is designed for real-world club conditions: time-poor volunteers, shared responsibility across committees, and inconsistent connectivity.
 
@@ -184,7 +184,7 @@ These issues result in administrative burnout, under-filled or cancelled shows, 
 **Boxer Record Management**
 
 * Boxer W/L counters remain editable by owning club
-* Enables manual updates for bouts arranged outside Ringcraft
+* Enables manual updates for bouts arranged outside FirstBell
 * Clubs prompted to periodically review and refresh boxer records until result automation is fully adopted
 
 ---

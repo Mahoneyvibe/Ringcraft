@@ -1,10 +1,10 @@
-# **Ringcraft — Claude Code Execution Brief (MVP)**
+# **FirstBell — Claude Code Execution Brief (MVP)**
 
 **Audience:** Claude Code / Engineers  
 **Authority:** Architecture v1 \+ Invariants §12  
-**Purpose:** Build Ringcraft MVP without architectural drift
+**Purpose:** Build FirstBell MVP without architectural drift
 
-This document tells you **how to build Ringcraft**, **in what order**, and **what you must not do**. If anything here conflicts with implementation instincts, this document wins.
+This document tells you **how to build FirstBell**, **in what order**, and **what you must not do**. If anything here conflicts with implementation instincts, this document wins.
 
 ---
 
@@ -24,7 +24,7 @@ Violating any of the above is a bug, even if the feature “works”.
 
 ### **Phase 0 — Environment & Safety**
 
-* Create **two Firebase projects**: `ringcraft-dev`, `ringcraft-prod`  
+* Create **two Firebase projects**: `firstbell-dev`, `firstbell-prod`  
 * Configure Firebase Auth  
 * Set up custom claims for `isPlatformAdmin`  
 * Scaffold Firestore **security rules first** (even if restrictive)
@@ -120,7 +120,7 @@ If you find yourself wanting to store `isEligible`, stop.
 * After 7 days, only platform admin can correct
 * Corrections reverse previous counter increments before applying new result
 
-**Important:** Boxer W/L counters remain declared data (manually editable by clubs for pre-Ringcraft history). The system auto-increments but does not lock.
+**Important:** Boxer W/L counters remain declared data (manually editable by clubs for pre-FirstBell history). The system auto-increments but does not lock.
 
 **Periodic review prompts:** Clubs are prompted to review and refresh boxer records until result automation is fully adopted. This is a transitional safety mechanism.
 

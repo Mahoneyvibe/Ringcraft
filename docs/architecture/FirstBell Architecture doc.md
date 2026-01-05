@@ -1,4 +1,4 @@
-# **Ringcraft — System Architecture (MVP)**
+# **FirstBell — System Architecture (MVP)**
 
 **Status:** Authoritative v1  
 **Scope:** MVP (non-authoritative, England Boxing–aligned)  
@@ -10,7 +10,7 @@ This document consolidates **product intent, data model, access rules, and opera
 
 ## **1\. Architecture Overview**
 
-Ringcraft is a **club-centric coordination system** for UK amateur boxing. It replaces manual matchmaking and fragmented communication with a single, auditable workflow that enables clubs to find, negotiate, and secure compliant bouts.
+FirstBell is a **club-centric coordination system** for UK amateur boxing. It replaces manual matchmaking and fragmented communication with a single, auditable workflow that enables clubs to find, negotiate, and secure compliant bouts.
 
 ### **Core Characteristics**
 
@@ -20,7 +20,7 @@ Ringcraft is a **club-centric coordination system** for UK amateur boxing. It re
 * **Failure-tolerant** (assumes human error and recovery)  
 * **Admin-operable** (human intervention is expected early)
 
-Ringcraft is explicitly designed to integrate with **England Boxing’s Locker** in later phases, but no coupling exists at MVP.
+FirstBell is explicitly designed to integrate with **England Boxing’s Locker** in later phases, but no coupling exists at MVP.
 
 ---
 
@@ -351,7 +351,7 @@ Clubs prompted to review and refresh boxer records periodically until result aut
 
 ## **12\. Architectural Invariants & Execution Rules (Authoritative)**
 
-This section defines **non-negotiable architectural rules** for the Ringcraft MVP. These rules exist to prevent logic drift, security regressions, and accidental overreach during implementation.
+This section defines **non-negotiable architectural rules** for the FirstBell MVP. These rules exist to prevent logic drift, security regressions, and accidental overreach during implementation.
 
 If any implementation violates these rules, the implementation is incorrect.
 
@@ -359,7 +359,7 @@ If any implementation violates these rules, the implementation is incorrect.
 
 ### **12.1 Data Authority Classification**
 
-All data in Ringcraft falls into one of four authority classes. These classes determine **where data originates, how it is updated, and how it must be treated**.
+All data in FirstBell falls into one of four authority classes. These classes determine **where data originates, how it is updated, and how it must be treated**.
 
 **A) Declared Data (Club-Provided)**  
 Examples:
@@ -390,7 +390,7 @@ Rules:
 * Derived data is computed client-side or in Cloud Functions  
 * Firestore queries must not attempt to compute derived values
 
-**C) System-Generated Data (Authoritative Within Ringcraft)**
+**C) System-Generated Data (Authoritative Within FirstBell)**
 Examples:
 
 * Proposal status
@@ -406,8 +406,8 @@ Rules:
 
 **Clarification — Bout Results vs Boxer W/L:**
 
-* **Bout result** is system-generated: recorded via Cloud Function, immutable after correction window, authoritative for that specific bout within Ringcraft
-* **Boxer W/L counters** remain declared data: auto-incremented by Ringcraft bout results, but manually editable by clubs to account for pre-Ringcraft history and bouts arranged outside the platform
+* **Bout result** is system-generated: recorded via Cloud Function, immutable after correction window, authoritative for that specific bout within FirstBell
+* **Boxer W/L counters** remain declared data: auto-incremented by FirstBell bout results, but manually editable by clubs to account for pre-FirstBell history and bouts arranged outside the platform
 * This hybrid approach enables automation while preserving club control over their boxer records
 
 **D) Non-Authoritative Indicators**  
@@ -511,5 +511,5 @@ This section is authoritative. If any implementation decision conflicts with thi
 
 **Architecture v1 — Complete & Locked**
 
-This document, together with the PRD, defines the authoritative blueprint for Ringcraft MVP.
+This document, together with the PRD, defines the authoritative blueprint for FirstBell MVP.
 

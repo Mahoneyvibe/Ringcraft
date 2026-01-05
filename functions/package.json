@@ -1,7 +1,7 @@
 {
-  "name": "ringcraft-functions",
+  "name": "firstbell-functions",
   "version": "0.0.1",
-  "description": "Cloud Functions for Ringcraft",
+  "description": "Cloud Functions for FirstBell",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",

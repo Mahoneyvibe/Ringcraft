@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Ringcraft is an AI-assisted matchmaking platform for UK amateur boxing clubs. It replaces manual coordination workflows (databases, phone calls, WhatsApp) with a club-centric system for finding, negotiating, and securing compliant amateur bouts.
+FirstBell is an AI-assisted matchmaking platform for UK amateur boxing clubs. It replaces manual coordination workflows (databases, phone calls, WhatsApp) with a club-centric system for finding, negotiating, and securing compliant amateur bouts.
 
-**Key characteristic:** Non-authoritative at MVP — Ringcraft does not replace England Boxing's official systems. It embeds EB technical rules into matchmaking to prevent non-compliant bouts from being proposed.
+**Key characteristic:** Non-authoritative at MVP — FirstBell does not replace England Boxing's official systems. It embeds EB technical rules into matchmaking to prevent non-compliant bouts from being proposed.
 
 ## Tech Stack
 
@@ -59,12 +59,12 @@ admin/auditLogs                # Immutable audit trail
 
 - **Declared data** (club-provided): Editable, not validated, not authoritative (boxer weights, bout totals)
 - **Derived data** (computed): Never persisted (age, eligibility)
-- **System-generated** (authoritative within Ringcraft): Not client-writable (proposal/bout status, bout results)
+- **System-generated** (authoritative within FirstBell): Not client-writable (proposal/bout status, bout results)
 - **Non-authoritative indicators**: Advisory only (compliance filters, match recommendations)
 
 **Bout Results vs Boxer W/L (Hybrid Model):**
 - **Bout result** is system-generated: recorded via Cloud Function, authoritative for that bout
-- **Boxer W/L counters** remain declared data: auto-incremented on result, but manually editable by clubs for pre-Ringcraft history and bouts arranged outside the platform
+- **Boxer W/L counters** remain declared data: auto-incremented on result, but manually editable by clubs for pre-FirstBell history and bouts arranged outside the platform
 - **Periodic review prompts**: Clubs are prompted to review and refresh boxer records until result automation is fully adopted
 
 ## Build Order
@@ -99,8 +99,8 @@ Implementation must follow this sequence:
 
 ## Key Documentation
 
-- `docs/prd/Ringcraft PRD.md` — Product requirements
-- `docs/architecture/Ringcraft Architecture doc.md` — System architecture (authoritative v1)
+- `docs/prd/FirstBell PRD.md` — Product requirements
+- `docs/architecture/FirstBell Architecture doc.md` — System architecture (authoritative v1)
 - `docs/project execution brief/Code Execution Brief.md` — Build order and golden rules
 
 ## BMad Method

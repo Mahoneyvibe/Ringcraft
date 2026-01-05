@@ -1,7 +1,7 @@
 Firebase Implementation Plan (v1)
 
 Status: Approved for Phase 0–1 execution    
-Derived from: Ringcraft Architecture v1    
+Derived from: FirstBell Architecture v1    
 Authority: Execution reference (must not violate architecture or PRD)
 
   1\. Firestore Collections & Subcollections

@@ -1,4 +1,4 @@
-# **Ringcraft MVP — Sprint Plan v1.1**
+# **FirstBell MVP — Sprint Plan v1.1**
 
 **Role:** Scrum Master  
 **Inputs:** PRD \+ Architecture v1 \+ Epics & Stories v1.1  

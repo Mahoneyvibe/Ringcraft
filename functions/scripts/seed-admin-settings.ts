@@ -20,7 +20,7 @@ async function seed() {
   // if not provided by the environment.
   if (!admin.apps.length) {
     admin.initializeApp({
-      projectId: "ringcraft-dev",
+      projectId: "firstbell-dev",
     });
   }
 

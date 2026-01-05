@@ -1,4 +1,4 @@
-# **Ringcraft MVP — Epics & User Stories (v1.1)**
+# **FirstBell MVP — Epics & User Stories (v1.1)**
 
 **Status:** Authoritative backlog (supersedes v1.0)  
 **Sources:** PRD \+ Architecture v1 (incl. Section 12 Invariants)  
@@ -18,7 +18,7 @@ Establish secure identity, club-centric access, and platform admin separation.
 
 **As a** club official  
 **I want** to sign up and log in securely  
-**So that** I can access Ringcraft features.
+**So that** I can access FirstBell features.
 
 **Acceptance Criteria**
 
@@ -383,7 +383,7 @@ Automate boxer record updates through show result capture, reducing manual data 
 
 **As a** club official
 **I want** to manually edit my boxer's W/L record
-**So that** I can capture pre-Ringcraft history and bouts outside the platform.
+**So that** I can capture pre-FirstBell history and bouts outside the platform.
 
 **Acceptance Criteria**
 

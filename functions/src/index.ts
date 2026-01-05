@@ -1,7 +1,7 @@
 /**
- * Ringcraft Cloud Functions
+ * FirstBell Cloud Functions
  *
- * This file exports all Cloud Functions for the Ringcraft platform.
+ * This file exports all Cloud Functions for the FirstBell platform.
  * Functions own all state transitions for proposals, bouts, slots, and tokens.
  *
  * Architecture invariants (from Architecture v1 Section 12):
