@@ -279,4 +279,330 @@ describeIfEmulator("Club Security Rules", () => {
       await assertSucceeds(query.get());
     });
   });
+
+  // ═══════════════════════════════════════════
+  // Story 2.2: Members Subcollection Tests (Task 8)
+  // ═══════════════════════════════════════════
+
+  describe("Members Subcollection Read Access (Task 8.1)", () => {
+    it("should allow authenticated user to read club members", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+          claimedBy: "member-user",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+            joinedAt: new Date(),
+            updatedAt: new Date(),
+          });
+      });
+
+      // Test: Authenticated user can read member
+      const authUser = testEnv.authenticatedContext("any-user", {});
+      const memberRef = authUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertSucceeds(memberRef.get());
+    });
+
+    it("should allow authenticated user to list club members", async () => {
+      // Setup: Create club with multiple members
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-1")
+          .set({
+            userId: "member-1",
+            displayName: "Member One",
+            role: "chair",
+          });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-2")
+          .set({
+            userId: "member-2",
+            displayName: "Member Two",
+            role: "coach",
+          });
+      });
+
+      // Test: Authenticated user can list members
+      const authUser = testEnv.authenticatedContext("any-user", {});
+      const membersRef = authUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members");
+      await assertSucceeds(membersRef.get());
+    });
+
+    it("should deny unauthenticated user from reading club members", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+          });
+      });
+
+      // Test: Unauthenticated user cannot read member
+      const unauthUser = testEnv.unauthenticatedContext();
+      const memberRef = unauthUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertFails(memberRef.get());
+    });
+  });
+
+  describe("Members Subcollection Write Access (Task 8.2, 8.3)", () => {
+    it("should deny client from creating member document", async () => {
+      // Setup: Create club
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+      });
+
+      // Test: Authenticated user cannot create member (must use Cloud Functions)
+      const authUser = testEnv.authenticatedContext("user-123", {});
+      const memberRef = authUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("user-123");
+      await assertFails(
+        memberRef.set({
+          userId: "user-123",
+          displayName: "New Member",
+          role: "coach",
+          joinedAt: new Date(),
+          updatedAt: new Date(),
+        })
+      );
+    });
+
+    it("should deny admin from creating member via client (Task 8.3)", async () => {
+      // Setup: Create club
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+      });
+
+      // Test: Admin cannot create member via client (must use Cloud Functions)
+      const adminUser = testEnv.authenticatedContext("admin-user", {
+        isPlatformAdmin: true,
+      });
+      const memberRef = adminUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("admin-user");
+      await assertFails(
+        memberRef.set({
+          userId: "admin-user",
+          displayName: "Admin Member",
+          role: "chair",
+          joinedAt: new Date(),
+          updatedAt: new Date(),
+        })
+      );
+    });
+
+    it("should deny client from updating member document", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+          });
+      });
+
+      // Test: Authenticated user (even the member themselves) cannot update
+      const authUser = testEnv.authenticatedContext("member-user", {});
+      const memberRef = authUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertFails(
+        memberRef.update({
+          role: "matchmaker",
+        })
+      );
+    });
+
+    it("should deny admin from updating member via client", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+          });
+      });
+
+      // Test: Admin cannot update member via client
+      const adminUser = testEnv.authenticatedContext("admin-user", {
+        isPlatformAdmin: true,
+      });
+      const memberRef = adminUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertFails(
+        memberRef.update({
+          role: "suspended",
+        })
+      );
+    });
+
+    it("should deny client from deleting member document", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+          });
+      });
+
+      // Test: Authenticated user cannot delete member
+      const authUser = testEnv.authenticatedContext("user-123", {});
+      const memberRef = authUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertFails(memberRef.delete());
+    });
+
+    it("should deny admin from deleting member via client", async () => {
+      // Setup: Create club and member
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await context.firestore().collection("clubs").doc("test-club").set({
+          clubId: "test-club",
+          name: "Test Boxing Club",
+          region: "London",
+          status: "claimed",
+        });
+        await context
+          .firestore()
+          .collection("clubs")
+          .doc("test-club")
+          .collection("members")
+          .doc("member-user")
+          .set({
+            userId: "member-user",
+            displayName: "John Member",
+            role: "chair",
+          });
+      });
+
+      // Test: Admin cannot delete member via client
+      const adminUser = testEnv.authenticatedContext("admin-user", {
+        isPlatformAdmin: true,
+      });
+      const memberRef = adminUser
+        .firestore()
+        .collection("clubs")
+        .doc("test-club")
+        .collection("members")
+        .doc("member-user");
+      await assertFails(memberRef.delete());
+    });
+  });
 });

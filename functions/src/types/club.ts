@@ -61,3 +61,29 @@ export interface SearchClubsResponse {
   clubs: ClubSearchResult[];
   total: number;
 }
+
+/**
+ * Story 2.2 - Club Member Interface
+ *
+ * Club members are users associated with a club.
+ * Created when a club claim is approved.
+ *
+ * Collection: clubs/{clubId}/members/{userId}
+ */
+
+/**
+ * Club member roles (descriptive only - not enforced in security rules at MVP)
+ */
+export type ClubMemberRole = "chair" | "coach" | "matchmaker" | "secretary";
+
+/**
+ * Club member document as stored in Firestore
+ * Subcollection: clubs/{clubId}/members/{userId}
+ */
+export interface ClubMember {
+  userId: string;
+  displayName: string;          // Denormalized from user
+  role: ClubMemberRole;         // Descriptive only at MVP
+  joinedAt: Timestamp;
+  updatedAt: Timestamp;
+}

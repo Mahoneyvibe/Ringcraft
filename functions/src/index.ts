@@ -32,9 +32,12 @@ export { onUserCreate } from "./auth/onUserCreate";
 export { setAdminClaim } from "./admin/setAdminClaim";
 
 // ═══════════════════════════════════════════
-// CLUB FUNCTIONS (Story 2.1)
+// CLUB FUNCTIONS (Story 2.1, 2.2)
 // ═══════════════════════════════════════════
 export { searchClubs } from "./clubs/searchClubs";
+export { claimClub } from "./clubs/claimClub";
+export { approveClubClaim } from "./clubs/approveClubClaim";
+export { rejectClubClaim } from "./clubs/rejectClubClaim";
 
 /**
  * Helper: Check if the proposal system is paused
