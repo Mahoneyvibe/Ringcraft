@@ -21,6 +21,16 @@ admin.initializeApp();
 export const db = admin.firestore();
 export const auth = admin.auth();
 
+// ═══════════════════════════════════════════
+// AUTH TRIGGERS (Story 1.1)
+// ═══════════════════════════════════════════
+export { onUserCreate } from "./auth/onUserCreate";
+
+// ═══════════════════════════════════════════
+// ADMIN FUNCTIONS (Story 1.2)
+// ═══════════════════════════════════════════
+export { setAdminClaim } from "./admin/setAdminClaim";
+
 /**
  * Helper: Check if the proposal system is paused
  * Required in: createProposal, respondToProposal

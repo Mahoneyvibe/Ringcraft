@@ -10,7 +10,11 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "jest --testPathIgnorePatterns='rules'",
+    "test:watch": "jest --watch --testPathIgnorePatterns='rules'",
+    "test:emulator": "FIRESTORE_EMULATOR_HOST=localhost:8080 jest",
+    "test:all": "jest"
   },
   "engines": {
     "node": "20"
@@ -21,9 +25,14 @@
     "firebase-functions": "^5.0.0"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.57.0",
+    "firebase-functions-test": "^3.4.1",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.4.0"
   },
   "private": true

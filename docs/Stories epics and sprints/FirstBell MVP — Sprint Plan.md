@@ -12,10 +12,35 @@ This plan supersedes Sprint Plan v0.1.
 
 ### **Guiding Principles**
 
-* Build thin vertical slices  
-* Enforce architecture invariants early  
-* Admin safety is not optional  
+* Build thin vertical slices
+* Enforce architecture invariants early
+* Admin safety is not optional
 * Avoid speculative features
+
+---
+
+### **Phase vs Sprint Alignment**
+
+The Code Execution Brief defines **Phases** (technical build order). This Sprint Plan defines **Sprints** (story delivery). They serve different purposes:
+
+* **Phases** = Technical guardrails and constraints (authoritative for *how* to build)
+* **Sprints** = Story delivery roadmap (authoritative for *what* to deliver)
+
+**Alignment:**
+
+| Code Execution Brief | Sprint Plan | Notes |
+|---------------------|-------------|-------|
+| Phase 0 — Environment & Safety | Sprint 0 (infrastructure) | Firebase projects, rules scaffold |
+| Phase 1 — Core Data Skeleton | Sprint 0 (absorbed) | Collection validation happens via story implementation |
+| Phase 2 — Club Claim Flow | Sprint 1 | Epic 2.1, 2.2, 3.2 |
+| Phase 3 — Roster & Boxer | Sprint 2 | Epic 4.1, 4.2, 4.3 |
+| Phase 4 — Discovery | Sprint 3 | Epic 5.1, 6.1 |
+| Phase 5 — Proposals | Sprint 4 | Epic 7.1, 7.2, 9.3 |
+| Phase 6 — Shows & Slots | Sprint 5 | Epic 8.1, 8.2, 8.3 |
+| Phase 6.5 — Bout Results | Sprint 5.5 | Epic 10.1–10.4 |
+| Phase 7 — Admin Controls | Sprint 6 | Epic 9.1, 9.2, 10.3, 10.5 |
+
+**Key Decision:** Phase 1 (Core Data Skeleton) is absorbed into Sprint 0. Firestore collections are created on first write, and rule validation occurs naturally when implementing Epic 1.1 and 1.2. No separate "skeleton" story is needed.
 
 ---
 
@@ -23,20 +48,32 @@ This plan supersedes Sprint Plan v0.1.
 
 **Objective:** Prevent architectural and security drift.
 
-### **Included Stories**
+### **Infrastructure (Phase 0) — ✅ Complete**
 
-* Epic 1.1 — User Authentication  
-* Epic 1.2 — Platform Admin Role
+* Firebase project configuration
+* Firebase Auth emulator setup
+* Firestore security rules scaffold
+* Cloud Storage rules
+* Cloud Functions scaffold with kill switch helper
+* Emulator seed script for `admin/settings`
 
-### **Additional Mandatory Work**
+### **Stories to Implement**
 
-* Firestore security rules scaffold enforcing read/write boundaries
+* Story 1.1 — User Authentication
+* Story 1.2 — Platform Admin Role
+
+### **Phase 1 Absorption**
+
+Phase 1 (Core Data Skeleton) from the Code Execution Brief is absorbed into this sprint. Collection structure validation occurs through story implementation:
+* `users/{userId}` validated via Story 1.1
+* `admin/settings` validated via Story 1.2
+* Rule validation happens via Cloud Function tests
 
 ### **Exit Criteria**
 
-* Users can authenticate  
-* Platform admin identified  
-* Firestore rules deployed (even if restrictive)
+* ✅ Firestore rules deployed
+* ⬚ Users can authenticate (creates `users/{userId}` on first login)
+* ⬚ Platform admin can be designated (`isPlatformAdmin` claim)
 
 ---
 
@@ -177,5 +214,5 @@ MVP is complete when the following loop works end-to-end:
 
 ---
 
-**Sprint Plan v1.2 — Updated with Bout Results (Sprint 5.5)**
+**Sprint Plan v1.3 — Added Phase/Sprint alignment, Phase 1 absorption into Sprint 0**
 

@@ -1,10 +1,18 @@
-# **FirstBell MVP — Epics & User Stories (v1.1)**
+# **FirstBell MVP — Epics & User Stories (v1.3)**
 
-**Status:** Authoritative backlog (supersedes v1.0)  
-**Sources:** PRD \+ Architecture v1 (incl. Section 12 Invariants)  
+**Status:** Authoritative backlog
+**Sources:** PRD + Architecture v1 (incl. Section 12 Invariants)
 **Audience:** Engineers, Claude Code, Product Owner
 
 This document incorporates all architectural corrections identified in review. Any prior Epics & Stories documents are superseded by this version.
+
+---
+
+## **Sprint & Phase Alignment Note**
+
+This document defines **Epics and Stories** (what to deliver). The Code Execution Brief defines **Phases** (technical build order). See the Sprint Plan for the alignment table.
+
+**Key Decision:** Phase 1 (Core Data Skeleton) from the Code Execution Brief is absorbed into Sprint 0. Stories 1.1 and 1.2 validate the collection structure through implementation — no separate "skeleton" work is needed.
 
 ---
 
@@ -410,5 +418,5 @@ Automate boxer record updates through show result capture, reducing manual data 
 
 ## **Status**
 
-**Epics & Stories v1.2 — Updated with Epic 10 (Bout Results)**
+**Epics & Stories v1.3 — Added Sprint/Phase alignment note**
 

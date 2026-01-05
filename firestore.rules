@@ -122,7 +122,8 @@ service cloud.firestore {
       allow write: if false;  // Cloud Functions only
     }
 
-    match /admin/auditLogs/{logId} {
+    // Audit logs stored as subcollection: admin/auditLogs/entries/{logId}
+    match /admin/auditLogs/entries/{logId} {
       allow read: if isPlatformAdmin();
       allow create: if false;  // Cloud Functions only
       allow update: if false;  // Immutable
