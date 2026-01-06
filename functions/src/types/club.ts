@@ -83,7 +83,41 @@ export type ClubMemberRole = "chair" | "coach" | "matchmaker" | "secretary";
 export interface ClubMember {
   userId: string;
   displayName: string;          // Denormalized from user
+  photoURL: string | null;      // Denormalized from user (profile photo)
   role: ClubMemberRole;         // Descriptive only at MVP
   joinedAt: Timestamp;
   updatedAt: Timestamp;
+}
+
+/**
+ * Story 3.2 - Get Club Members Request/Response
+ *
+ * Callable function interfaces for retrieving club member list.
+ */
+
+/**
+ * Parameters for getClubMembers callable function
+ */
+export interface GetClubMembersRequest {
+  clubId: string;
+}
+
+/**
+ * Public-facing member data returned by getClubMembers
+ * Excludes sensitive fields, includes only display-relevant data
+ */
+export interface ClubMemberListItem {
+  userId: string;
+  displayName: string;
+  photoURL: string | null;
+  role: ClubMemberRole;
+  joinedAt: Timestamp;
+}
+
+/**
+ * Response from getClubMembers callable function
+ */
+export interface GetClubMembersResponse {
+  members: ClubMemberListItem[];
+  total: number;
 }

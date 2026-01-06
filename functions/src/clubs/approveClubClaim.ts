@@ -122,10 +122,11 @@ export const approveClubClaim = functions.https.onCall(
       const claimantId = club.claimedBy;
       const now = admin.firestore.Timestamp.now();
 
-      // 5. Get claimant user to get displayName
+      // 5. Get claimant user to get displayName and photoURL
       const userDoc = await db.collection("users").doc(claimantId).get();
       const userData = userDoc.data();
       const displayName = userData?.displayName || userData?.email || "Club Member";
+      const photoURL = userData?.photoURL || null;
 
       // 6. Use transaction for atomic updates
       await db.runTransaction(async (transaction) => {
@@ -141,6 +142,7 @@ export const approveClubClaim = functions.https.onCall(
         transaction.set(memberRef, {
           userId: claimantId,
           displayName: displayName,
+          photoURL: photoURL,
           role: "chair", // First member defaults to chair
           joinedAt: now,
           updatedAt: now,
