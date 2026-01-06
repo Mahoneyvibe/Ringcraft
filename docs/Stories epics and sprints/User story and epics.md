@@ -105,14 +105,14 @@ Allow multiple officials to operate under one club identity.
 
 ### **Story 3.2 — View Club Members**
 
-**As a** club member  
-**I want** to see who represents my club  
+**As a** club member
+**I want** to see who represents my club
 **So that** I know who is acting on our behalf.
 
 **Acceptance Criteria**
 
-* Member list shows name, role, and profile photo  
-* Only members of the same club can view the list
+* Member list shows name, role, and profile photo
+* Any authenticated user can view club members (read-only for directory browsing)
 
 ---
 
@@ -507,12 +507,13 @@ Deliver the AI-first user experience that differentiates FirstBell, enabling nat
 
 ## **Status**
 
-**Epics & Stories v1.4 — Added Epic 11 (AI-First Frontend). Updated Story 6.1 for AI-first matchmaking. Updated authority refs to PRD v1.1 + Architecture v1.1.**
+**Epics & Stories v1.5 — Story 3.2 AC 2 corrected for security model alignment.**
 
 ## **Change Log**
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
+| 2026-01-06 | 1.5 | Story 3.2 AC 2 corrected: any authenticated user can view members (aligned with security model) | Quinn (QA) |
 | 2026-01-06 | 1.4 | Added Epic 11 (AI-First Frontend & Voice). Updated Story 6.1 for AI-first interaction. Updated authority refs to v1.1. | Bob (SM) |
 | — | 1.3 | Added Sprint/Phase alignment note | — |
 | — | 1.0 | Initial epics and stories | — |

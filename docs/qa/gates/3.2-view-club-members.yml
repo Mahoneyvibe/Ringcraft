@@ -1,0 +1,66 @@
+schema: 1
+story: '3.2'
+story_title: 'View Club Members'
+gate: PASS
+status_reason: 'Pre-implementation review complete. Story corrected for document alignment. Ready for development.'
+reviewer: 'Quinn (Test Architect)'
+review_type: 'pre-implementation'
+updated: '2026-01-06T20:45:00Z'
+
+top_issues: [] # No blocking issues - all contradictions resolved
+
+corrections_made:
+  - id: 'COR-001'
+    type: 'document-alignment'
+    description: 'AC 2 corrected from "only club members" to "any authenticated user" to align with security model'
+    files_updated:
+      - 'docs/Stories epics and sprints/User story and epics.md (v1.5)'
+      - 'docs/stories/3.2.story.md'
+  - id: 'COR-002'
+    type: 'schema-update'
+    description: 'Added photoURL field to ClubMember schema in Firebase Implementation Plan'
+    files_updated:
+      - 'docs/architecture/Firebase implementation plan.md'
+
+positive_findings:
+  - 'User document already has photoURL field - data source exists (onUserCreate.ts line 22)'
+  - 'Security rules correctly allow authenticated users to read members'
+  - 'Callable function pattern well-established from searchClubs, claimClub, approveClubClaim'
+  - 'Task breakdown is clear with appropriate subtasks'
+  - 'Test scenarios cover authentication, data completeness, and edge cases'
+  - 'All documents now aligned on member visibility model'
+
+document_alignment:
+  user_stories: 'v1.5 - AC 2 corrected'
+  firebase_impl_plan: 'Updated - photoURL added to ClubMember schema'
+  architecture_doc: 'v1.1 - Already mentions photo in denormalized data (aligned)'
+  firestore_rules: 'No changes needed - already allows authenticated read'
+
+evidence:
+  story_file: 'docs/stories/3.2.story.md'
+  related_code:
+    - 'functions/src/types/club.ts (ClubMember interface - needs photoURL)'
+    - 'functions/src/auth/onUserCreate.ts (User has photoURL - line 22)'
+    - 'functions/src/clubs/approveClubClaim.ts (creates member doc - line 141-147)'
+    - 'firestore.rules (members read rule - lines 48-51)'
+
+ac_validation:
+  - ac: 1
+    description: 'Member list shows name, role, and profile photo'
+    validation: 'Task 1.4 returns displayName, photoURL, role; Task 2 adds photoURL to schema'
+    status: 'ready'
+  - ac: 2
+    description: 'Any authenticated user can view club members (read-only)'
+    validation: 'Task 1.2 validates authentication only - no club membership check'
+    status: 'ready'
+
+recommendations:
+  immediate: [] # None - ready for implementation
+  future:
+    - action: 'Consider adding photoURL sync mechanism if users update profile photos after joining'
+      refs: ['functions/src/clubs/approveClubClaim.ts']
+      priority: 'low'
+      rationale: 'Denormalized data may become stale over time'
+
+quality_score: 100
+expires: '2026-01-20T20:45:00Z'

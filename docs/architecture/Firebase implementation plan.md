@@ -33,12 +33,13 @@ Authority: Execution reference (must not violate architecture or PRD)
 
   1.2.1 clubs/{clubId}/members (Subcollection)
 
-  clubs/{clubId}/members/{userId}  
-  ├── userId: string  
-  ├── displayName: string            \# Denormalized  
-  ├── role: string                   \# 'coach' | 'matchmaker' | 'secretary' | 'chair' (descriptive only)  
-  ├── joinedAt: timestamp  
-  └── updatedAt: timestamp  
+  clubs/{clubId}/members/{userId}
+  ├── userId: string
+  ├── displayName: string            \# Denormalized from user
+  ├── photoURL: string | null        \# Denormalized from user (profile photo)
+  ├── role: string                   \# 'coach' | 'matchmaker' | 'secretary' | 'chair' (descriptive only)
+  ├── joinedAt: timestamp
+  └── updatedAt: timestamp
   Note: Flat permissions at MVP — role is descriptive, not enforced.
 
   1.2.2 clubs/{clubId}/boxers (Subcollection)
