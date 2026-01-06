@@ -1,10 +1,10 @@
-# **FirstBell MVP — Epics & User Stories (v1.3)**
+# **FirstBell MVP — Epics & User Stories (v1.4)**
 
 **Status:** Authoritative backlog
-**Sources:** PRD + Architecture v1 (incl. Section 12 Invariants)
+**Sources:** PRD v1.1 + Architecture v1.1 (incl. Section 12 Invariants)
 **Audience:** Engineers, Claude Code, Product Owner
 
-This document incorporates all architectural corrections identified in review. Any prior Epics & Stories documents are superseded by this version.
+This document incorporates AI-first interaction model per PRD v1.1 and Architecture v1.1 Section 2.4. Any prior Epics & Stories documents are superseded by this version.
 
 ---
 
@@ -187,20 +187,23 @@ Enable nationwide opponent discovery.
 
 ### **Goal**
 
-Surface viable, compliant match options.
+Surface viable, compliant match options via AI-first interaction.
 
-### **Story 6.1 — Match a Boxer**
+### **Story 6.1 — Match a Boxer (AI-First)**
 
-**As a** club official  
-**I want** to find compliant opponents  
-**So that** I avoid illegal bouts.
+**As a** club official
+**I want** to find compliant opponents using natural language
+**So that** I can quickly identify matches without complex forms.
 
 **Acceptance Criteria**
 
-* Firestore queries retrieve candidates using static fields only  
-* Age and experience compliance is computed at runtime  
-* **No compliance or eligibility fields are persisted**  
+* **AI-first interaction:** Users can request matches via natural language (e.g., "Find a match for Jake, 72kg")
+* **AI explains reasoning:** Match suggestions include AI-generated explanation on request
+* Firestore queries retrieve candidates using static fields only
+* Age and experience compliance is computed at runtime
+* **No compliance or eligibility fields are persisted**
 * Non-compliant matches are excluded before display
+* **Fallback navigation:** Traditional search/filter UI available for users who prefer it
 
 ---
 
@@ -416,7 +419,101 @@ Automate boxer record updates through show result capture, reducing manual data 
 
 ---
 
+## **EPIC 11 — AI-First Frontend & Voice Interface**
+
+### **Goal**
+
+Deliver the AI-first user experience that differentiates FirstBell, enabling natural language and voice interaction.
+
+### **Story 11.1 — PWA Shell & Navigation**
+
+**As a** club official
+**I want** a mobile-first progressive web app
+**So that** I can access FirstBell on any device.
+
+**Acceptance Criteria**
+
+* PWA installable on mobile devices
+* Bottom navigation: Inbox, Club, Browse
+* Offline-read tolerant (cached rosters, shows, proposals)
+* Responsive design (mobile-first, desktop-supported)
+
+---
+
+### **Story 11.2 — AI Bar (Text Input)**
+
+**As a** club official
+**I want** a persistent AI input bar
+**So that** I can ask questions and request actions in natural language.
+
+**Acceptance Criteria**
+
+* AI bar visible at top of all screens
+* Accepts natural language text input
+* Processes queries via AI Cloud Function
+* Returns contextual responses based on current screen
+* **AI cannot mutate state** — all actions require user confirmation
+
+---
+
+### **Story 11.3 — Voice Input Integration**
+
+**As a** club official
+**I want** to use voice input
+**So that** I can interact hands-free in busy gym environments.
+
+**Acceptance Criteria**
+
+* Tap-to-speak button on AI bar
+* Uses browser-native Web Speech API
+* Visual feedback during listening (pulsing indicator)
+* Transcribed text sent to AI for processing
+* Works on supported mobile browsers
+
+---
+
+### **Story 11.4 — AI Inbox (Proactive Cards)**
+
+**As a** club official
+**I want** an AI-driven inbox
+**So that** I see actionable suggestions without searching.
+
+**Acceptance Criteria**
+
+* Home screen displays AI-generated action cards
+* Card types: Match suggestions, Incoming proposals, Open slots, Result prompts
+* Cards are dismissible (swipe or tap)
+* AI prioritizes cards by relevance/urgency
+* Cards link to relevant actions (one tap to act)
+
+---
+
+### **Story 11.5 — AI Cloud Function Integration**
+
+**As a** system component
+**I want** a secure AI mediation layer
+**So that** AI interactions are controlled and auditable.
+
+**Acceptance Criteria**
+
+* AI Cloud Function mediates all client ↔ LLM communication
+* **AI context scoped to authenticated user's club** — no cross-club data leakage
+* **AI has read-only access** to user's club data
+* **AI responses are advisory only** — compliance logic remains computed
+* Rate limiting to prevent abuse
+* Errors surface clear user feedback
+
+---
+
 ## **Status**
 
-**Epics & Stories v1.3 — Added Sprint/Phase alignment note**
+**Epics & Stories v1.4 — Added Epic 11 (AI-First Frontend). Updated Story 6.1 for AI-first matchmaking. Updated authority refs to PRD v1.1 + Architecture v1.1.**
+
+## **Change Log**
+
+| Date | Version | Changes | Author |
+|------|---------|---------|--------|
+| 2026-01-06 | 1.4 | Added Epic 11 (AI-First Frontend & Voice). Updated Story 6.1 for AI-first interaction. Updated authority refs to v1.1. | Bob (SM) |
+| — | 1.3 | Added Sprint/Phase alignment note | — |
+| — | 1.0 | Initial epics and stories | — |
 

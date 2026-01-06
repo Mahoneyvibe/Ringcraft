@@ -139,9 +139,11 @@ These issues result in administrative burnout, under-filled or cancelled shows, 
 
 ### **3.4 Matchmaking & Compliance Filtering**
 
-* Search for matches via structured input (NL optional later)  
-* Filter non-compliant matches (age, weight, experience)  
-* Display shortlist of viable opponents
+* **AI-first interaction model:** Users interact primarily via natural language (text and voice) through a persistent AI assistant
+* Voice input supported for hands-free operation (mobile-first users in busy environments)
+* AI proactively surfaces match suggestions, open slots, and actionable items
+* Filter non-compliant matches (age, weight, experience) automatically
+* Display shortlist of viable opponents with AI-explained reasoning on request
 
 ---
 
@@ -223,10 +225,12 @@ Non-happy paths (conflicts, errors, disputes) are resolved via admin-assisted re
 
 ### **UX Constraints**
 
-* Speed over depth: single-screen actions where possible  
-* Zero-training requirement  
-* WhatsApp-first mental model  
-* No implication of official authority  
+* **AI-first interaction:** Persistent AI assistant as primary interface, available across all screens
+* Speed over depth: single-screen actions where possible
+* Zero-training requirement (AI guides users naturally)
+* Voice input for hands-free, mobile-first operation
+* WhatsApp-first mental model (conversational, card-based)
+* No implication of official authority
 * Forgiveness and reassurance in flows
 
 ### **Technical Constraints**
@@ -253,29 +257,49 @@ The system assumes mistakes, partial data, and human error are normal and priori
 
 ### **Design Philosophy**
 
-* Utility, not platform  
-* Dip-in tool, not system  
+* Utility, not platform
+* Dip-in tool, not system
 * Feels like structured WhatsApp, not software
+* **AI as invisible helper:** AI surfaces relevant information proactively without requiring users to "learn" AI
+
+### **Interaction Model**
+
+* **AI-first inbox:** Home screen is an AI-driven feed of actionable cards (match suggestions, proposals, alerts)
+* **Persistent AI bar:** Always-visible input for natural language queries (text and voice)
+* **Voice input:** Tap-to-speak for hands-free operation, essential for mobile users in gym environments
+* **Contextual AI:** AI understands current screen context ("Tell me about this boxer" while viewing a profile)
+* **Fallback navigation:** Traditional browse/search available for users who prefer direct navigation
 
 ### **Visual & Interaction Constraints**
 
-* Clean, minimal, high-contrast  
-* Card-based layouts  
-* One primary action per screen  
+* Clean, minimal, high-contrast
+* Card-based layouts
+* One primary action per screen
 * Tap-first, thumb-friendly
+* Large touch targets (44px minimum) for gym/mobile use
 
 ### **Language & Tone**
 
-* Plain English  
-* Familiar boxing terminology  
-* No AI or SaaS jargon
+* Plain English
+* Familiar boxing terminology
+* Natural AI responses (no robotic or corporate tone)
+* No SaaS jargon or technical terminology
 
 ### **Brand Positioning (MVP)**
 
-* Practical  
-* Trustworthy  
-* Calm under pressure  
+* Practical
+* Trustworthy
+* Calm under pressure
 * Neutral and non-authoritative
+
+---
+
+## **7\. Change Log**
+
+| Date | Version | Changes | Author |
+|------|---------|---------|--------|
+| 2026-01-06 | 1.1 | Added AI-first interaction model as MVP scope: persistent AI bar, voice input, proactive AI inbox. Updated Sections 3.4, 5, and 6 to reflect AI-first UX vision. | Sarah (PO) |
+| — | 1.0 | Initial PRD | — |
 
 ---
 

@@ -43,6 +43,7 @@ This document defines the user experience goals, information architecture, user 
 
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
+| 2026-01-06 | 1.1 | Added Section 3.6 (Bout Result Recording detailed flow). Added wireframes: 4.6 (Result Recording), 4.7-4.10 (Admin Panel: Dashboard, Claims, Audit Log, Settings). Addresses QA gaps DOC-001 and DOC-002. | Sally (UX Expert) |
 | 2026-01-06 | 1.0 | Initial draft | Sally (UX Expert) |
 
 ---
@@ -339,6 +340,71 @@ graph TD
 
 ---
 
+### 3.6 Bout Result Recording (Detailed Flow)
+
+**User Goal:** Record bout outcomes after show day
+
+**Entry Points:** My Shows → Show Card → Record Results (appears after show date)
+
+**Pre-condition:** Show date has passed, user is from hosting club
+
+```mermaid
+graph TD
+    A[My Shows] --> B[Select Past Show]
+    B --> C[Show Card with 'Record Results' button]
+    C --> D[Result Recording View]
+    D --> E[List of bouts needing results]
+
+    E --> F{For each bout}
+    F --> G[Select Winner]
+    F --> H[Mark 'Did Not Happen']
+
+    G --> I[Confirm selection]
+    H --> J[Optional: Add reason]
+
+    I --> K[Bout marked 'completed']
+    J --> L[Bout marked 'did_not_happen']
+
+    K --> M[Boxer W/L updated]
+    L --> N[No W/L change]
+
+    M --> O[Opposing club notified]
+    N --> O
+```
+
+**Result Recording States:**
+
+| Bout State | Display | Actions Available |
+|------------|---------|-------------------|
+| `agreed` (before show) | "Upcoming" | View details only |
+| `agreed` (after show) | "Awaiting Result" | Record result |
+| `completed` | "Result: [Winner] W" | Edit (if <7 days) |
+| `did_not_happen` | "Did Not Happen" | Edit (if <7 days) |
+| `completed` (>7 days) | "Result: [Winner] W" | Contact admin to edit |
+
+**Result Correction Flow:**
+
+```mermaid
+graph TD
+    A[View Recorded Result] --> B{Within 7 days?}
+    B -->|Yes| C[Edit Result button visible]
+    B -->|No| D[Show 'Contact Admin' message]
+
+    C --> E[Change winner OR mark DNH]
+    E --> F[Confirm change]
+    F --> G[Previous W/L reversed]
+    G --> H[New W/L applied]
+    H --> I[Audit log updated]
+    I --> J[Both clubs notified of correction]
+```
+
+**Edge Cases:**
+- Both clubs record different results → System accepts hosting club's result, opposing club notified
+- Hosting club doesn't record → Opposing club prompted to update boxer records manually after 14 days
+- Result disputed → Admin resolution via admin panel
+
+---
+
 ## 4. Wireframes & Mockups
 
 ### 4.0 Design Files
@@ -594,6 +660,210 @@ graph TD
 - Number not displayed directly (privacy) - just initiates call
 - Falls back to WhatsApp link if phone unavailable
 - Logged as "contact attempted" in audit trail
+
+---
+
+### 4.6 Result Recording View
+
+**Purpose:** Allow hosting club to record bout outcomes after show day
+
+**Mobile Layout:**
+```
+┌─────────────────────────────────┐
+│ 🤖 [Ask anything...]    [🎤][?] │
+├─────────────────────────────────┤
+│ ← Back     Manchester Open      │
+│            15 Feb 2026          │
+├─────────────────────────────────┤
+│ Record Results                  │
+│ 3 of 5 bouts recorded           │
+├─────────────────────────────────┤
+│ ┌─────────────────────────────┐ │
+│ │ Bout 1              ✓ Done  │ │
+│ │ Jake T. vs Tom S.           │ │
+│ │ Result: Jake T. (W)         │ │
+│ │ [Edit]                      │ │
+│ └─────────────────────────────┘ │
+│ ┌─────────────────────────────┐ │
+│ │ Bout 2           ⏳ Pending │ │
+│ │ Sam W. vs Dan J.            │ │
+│ │ ┌─────────┐ ┌─────────────┐ │ │
+│ │ │ Sam W.  │ │   Dan J.    │ │ │
+│ │ │  (W)    │ │    (W)      │ │ │
+│ │ └─────────┘ └─────────────┘ │ │
+│ │ [Did Not Happen]            │ │
+│ └─────────────────────────────┘ │
+│ ┌─────────────────────────────┐ │
+│ │ Bout 3           ⏳ Pending │ │
+│ │ ...                         │ │
+│ └─────────────────────────────┘ │
+├─────────────────────────────────┤
+│  [Inbox]   [Club]    [Browse]   │
+└─────────────────────────────────┘
+```
+
+**Key Elements:**
+- Progress indicator (X of Y recorded)
+- Each bout shows both boxers
+- Tap boxer name to select as winner
+- "Did Not Happen" option for bouts that didn't occur
+- Edit button for recently recorded results (<7 days)
+- Visual distinction between recorded and pending
+
+**Interaction Notes:**
+- Tap boxer = select as winner (requires confirmation)
+- "Did Not Happen" opens reason input (optional)
+- Edit shows same selection UI, pre-filled with current result
+- After 7 days, Edit becomes "Contact Admin"
+
+---
+
+### 4.7 Admin Panel - Dashboard
+
+**Purpose:** Platform admin oversight and intervention
+
+**Note:** Admin UI is functional, not polished. Read-first design.
+
+**Desktop Layout (Admin is desktop-only):**
+```
+┌────────────────────────────────────────────────────────┐
+│ FirstBell Admin                        [Admin Name] ▼  │
+├──────────┬─────────────────────────────────────────────┤
+│          │                                             │
+│  Dashboard│  Dashboard                                 │
+│  Claims   │  ┌─────────────────────────────────────┐   │
+│  Clubs    │  │ Pending Claims: 3                   │   │
+│  Users    │  │ [View All →]                        │   │
+│  Shows    │  └─────────────────────────────────────┘   │
+│  Bouts    │  ┌─────────────────────────────────────┐   │
+│  Audit Log│  │ Active Clubs: 127                   │   │
+│  Settings │  │ Suspended: 2                        │   │
+│           │  └─────────────────────────────────────┘   │
+│           │  ┌─────────────────────────────────────┐   │
+│           │  │ System Status                       │   │
+│           │  │ Proposals: ✅ Active                │   │
+│           │  │ Maintenance: ❌ Off                 │   │
+│           │  └─────────────────────────────────────┘   │
+│           │                                             │
+└──────────┴─────────────────────────────────────────────┘
+```
+
+---
+
+### 4.8 Admin Panel - Pending Claims
+
+**Purpose:** Review and approve/reject club claim requests
+
+**Desktop Layout:**
+```
+┌────────────────────────────────────────────────────────┐
+│ FirstBell Admin                        [Admin Name] ▼  │
+├──────────┬─────────────────────────────────────────────┤
+│          │                                             │
+│  Dashboard│  Pending Claims (3)                        │
+│ >Claims  │                                             │
+│  Clubs    │  ┌─────────────────────────────────────┐   │
+│  Users    │  │ City Boxing Club                    │   │
+│  Shows    │  │ Birmingham • Requested: 2 hours ago │   │
+│  Bouts    │  │ Claimed by: john@email.com          │   │
+│  Audit Log│  │ [View Details] [Approve] [Reject]   │   │
+│  Settings │  └─────────────────────────────────────┘   │
+│           │  ┌─────────────────────────────────────┐   │
+│           │  │ Northside Warriors                  │   │
+│           │  │ Leeds • Requested: 1 day ago        │   │
+│           │  │ Claimed by: mike@boxing.com         │   │
+│           │  │ [View Details] [Approve] [Reject]   │   │
+│           │  └─────────────────────────────────────┘   │
+│           │                                             │
+└──────────┴─────────────────────────────────────────────┘
+```
+
+**Key Elements:**
+- List of pending claims with key info
+- Quick actions: Approve / Reject
+- View Details expands to show user info, email verification status
+- Reject requires reason input (sent to user)
+
+---
+
+### 4.9 Admin Panel - Audit Log
+
+**Purpose:** View immutable record of all admin actions
+
+**Desktop Layout:**
+```
+┌────────────────────────────────────────────────────────┐
+│ FirstBell Admin                        [Admin Name] ▼  │
+├──────────┬─────────────────────────────────────────────┤
+│          │                                             │
+│  Dashboard│  Audit Log                    [Filter ▼]   │
+│  Claims   │                                             │
+│  Clubs    │  ┌─────────────────────────────────────┐   │
+│  Users    │  │ 2026-01-06 14:32:01                 │   │
+│  Shows    │  │ club.claim.approved                 │   │
+│  Bouts    │  │ Admin: admin@firstbell.com          │   │
+│ >Audit Log│  │ Club: City Boxing Club              │   │
+│  Settings │  │ User: john@email.com                │   │
+│           │  └─────────────────────────────────────┘   │
+│           │  ┌─────────────────────────────────────┐   │
+│           │  │ 2026-01-06 14:30:45                 │   │
+│           │  │ bout.result.corrected               │   │
+│           │  │ Admin: admin@firstbell.com          │   │
+│           │  │ Bout: #12345                        │   │
+│           │  │ Before: Jake T. (W) → After: Sam W. │   │
+│           │  └─────────────────────────────────────┘   │
+│           │                                             │
+│           │  [Load More]                               │
+└──────────┴─────────────────────────────────────────────┘
+```
+
+**Key Elements:**
+- Chronological list, newest first
+- Each entry shows: timestamp, action type, admin, affected entities
+- Filter by action type, date range, admin
+- Read-only — no edit/delete capability
+- Expandable details for complex actions
+
+---
+
+### 4.10 Admin Panel - Settings (Kill Switches)
+
+**Purpose:** System-wide controls for emergency situations
+
+**Desktop Layout:**
+```
+┌────────────────────────────────────────────────────────┐
+│ FirstBell Admin                        [Admin Name] ▼  │
+├──────────┬─────────────────────────────────────────────┤
+│          │                                             │
+│  Dashboard│  System Settings                           │
+│  Claims   │                                             │
+│  Clubs    │  ⚠️  Changes here affect all users         │
+│  Users    │                                             │
+│  Shows    │  ┌─────────────────────────────────────┐   │
+│  Bouts    │  │ Proposal Sending                    │   │
+│  Audit Log│  │ ○ Enabled  ● Disabled               │   │
+│ >Settings │  │ Disables all new proposal creation  │   │
+│           │  └─────────────────────────────────────┘   │
+│           │  ┌─────────────────────────────────────┐   │
+│           │  │ Maintenance Mode                    │   │
+│           │  │ ● Off  ○ On                         │   │
+│           │  │ Shows banner to all users           │   │
+│           │  │ Message: [                        ] │   │
+│           │  └─────────────────────────────────────┘   │
+│           │                                             │
+│           │  [Save Changes]                            │
+│           │                                             │
+│           │  All changes are logged to audit trail.    │
+└──────────┴─────────────────────────────────────────────┘
+```
+
+**Key Elements:**
+- Clear warning about system-wide impact
+- Toggle controls for kill switches
+- Maintenance mode with custom message
+- All changes logged to audit trail
+- Confirmation required for enable/disable
 
 ---
 

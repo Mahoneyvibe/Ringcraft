@@ -1,7 +1,7 @@
 # **FirstBell — Claude Code Execution Brief (MVP)**
 
-**Audience:** Claude Code / Engineers  
-**Authority:** Architecture v1 \+ Invariants §12  
+**Audience:** Claude Code / Engineers
+**Authority:** Architecture v1.1 + Invariants §12
 **Purpose:** Build FirstBell MVP without architectural drift
 
 This document tells you **how to build FirstBell**, **in what order**, and **what you must not do**. If anything here conflicts with implementation instincts, this document wins.
@@ -10,13 +10,14 @@ This document tells you **how to build FirstBell**, **in what order**, and **wha
 
 ## **1\. Golden Rules (Read First)**
 
-1. **Architecture v1 is law** — especially Section 12 (Invariants).  
-2. **Cloud Functions own state transitions**. Clients request, never mutate.  
-3. **Nothing is authoritative** except system state (statuses, timestamps).  
-4. **Derived data is never stored**.  
+1. **Architecture v1.1 is law** — especially Section 12 (Invariants).
+2. **Cloud Functions own state transitions**. Clients request, never mutate.
+3. **Nothing is authoritative** except system state (statuses, timestamps).
+4. **Derived data is never stored**.
 5. **Admins exist for recovery, not control**.
+6. **AI is read-only and advisory**. AI cannot mutate state — all actions require user confirmation and execute via Cloud Functions.
 
-Violating any of the above is a bug, even if the feature “works”.
+Violating any of the above is a bug, even if the feature "works".
 
 ---
 
@@ -75,11 +76,42 @@ Rules to enforce:
 
 ### **Phase 4 — Discovery & Matchmaking**
 
-* Firestore queries only retrieve **candidates**  
-* Age / experience compliance computed at runtime  
+* Firestore queries only retrieve **candidates**
+* Age / experience compliance computed at runtime
 * No compliance flags stored
 
 If you find yourself wanting to store `isEligible`, stop.
+
+---
+
+### **Phase 4.5 — AI Integration**
+
+* **AI Cloud Function** — mediates between client and LLM API (e.g., Claude)
+* **Voice input** — browser-native Web Speech API (no backend required)
+* **AI bar component** — persistent input across all screens
+* **AI inbox** — proactive card feed driven by AI suggestions
+
+**AI architectural boundaries (critical):**
+
+* AI has **read-only access** to authenticated user's club data
+* AI **cannot call state-mutating Cloud Functions** directly
+* All AI-suggested actions require **explicit user confirmation** before execution
+* AI context is **scoped to user's club** — never leak cross-club data to AI
+* AI responses are **advisory only** — compliance logic remains computed, not AI-generated
+
+**Implementation order:**
+
+1. AI Cloud Function with basic prompt handling
+2. AI bar UI component (text input first)
+3. Voice input integration (Web Speech API)
+4. AI inbox card generation
+5. Contextual AI (screen-aware queries)
+
+**Never allow AI to:**
+
+* Execute proposals, claims, or any state changes without user confirmation
+* Access boxer data from clubs the user doesn't belong to
+* Generate compliance decisions (use existing computed logic)
 
 ---
 
@@ -147,6 +179,9 @@ Admin UI should be functional, not polished.
 * ❌ Do not skip audit logging for admin actions or result corrections
 * ❌ Do not merge dev and prod environments
 * ❌ Do not lock boxer W/L counters (they remain manually editable)
+* ❌ Do not let AI execute state changes without user confirmation
+* ❌ Do not pass cross-club boxer data to AI context
+* ❌ Do not let AI generate compliance decisions (always compute)
 
 ---
 
@@ -171,10 +206,19 @@ If an implementation choice is unclear:
 
 ## **Final Instruction**
 
-Build the **smallest thing that satisfies the story**.  
+Build the **smallest thing that satisfies the story**.
 Do not anticipate future EB integration in MVP logic.
 
 If a feature requires breaking an invariant, the feature is wrong.
+
+---
+
+## **Change Log**
+
+| Date | Version | Changes | Author |
+|------|---------|---------|--------|
+| 2026-01-06 | 1.1 | Added Golden Rule #6 (AI read-only). Added Phase 4.5 (AI Integration) with boundaries and implementation order. Added AI-specific DO NOT items. Updated authority reference to Architecture v1.1. | Winston (Architect) |
+| — | 1.0 | Initial execution brief | — |
 
 ---
 

@@ -14,10 +14,11 @@ FirstBell is a **club-centric coordination system** for UK amateur boxing. It re
 
 ### **Core Characteristics**
 
-* **Non-authoritative at MVP** (not a system of record)  
-* **Compliance-aware by design** (filters illegal bouts before proposal)  
-* **Action-oriented** (intent → secured bout in minutes)  
-* **Failure-tolerant** (assumes human error and recovery)  
+* **Non-authoritative at MVP** (not a system of record)
+* **AI-first interaction** (natural language and voice as primary user input)
+* **Compliance-aware by design** (filters illegal bouts before proposal)
+* **Action-oriented** (intent → secured bout in minutes)
+* **Failure-tolerant** (assumes human error and recovery)
 * **Admin-operable** (human intervention is expected early)
 
 FirstBell is explicitly designed to integrate with **England Boxing’s Locker** in later phases, but no coupling exists at MVP.
@@ -28,9 +29,14 @@ FirstBell is explicitly designed to integrate with **England Boxing’s Locker**
 
 ### **2.1 Client**
 
-* **Progressive Web App (PWA)**  
-* Mobile-first, touch-optimised  
-* Offline-read tolerant (cached rosters, shows, proposals)  
+* **Progressive Web App (PWA)**
+* Mobile-first, touch-optimised
+* **AI-first interface:**
+  * Persistent AI bar for natural language input (text and voice)
+  * AI-driven inbox with proactive actionable cards
+  * Voice input via Web Speech API (browser-native)
+  * Fallback traditional navigation for direct access
+* Offline-read tolerant (cached rosters, shows, proposals)
 * Deep-link landing pages for no-login proposal responses
 
 ### **2.2 Backend (Firebase)**
@@ -43,8 +49,38 @@ FirstBell is explicitly designed to integrate with **England Boxing’s Locker**
 
 ### **2.3 External Services**
 
-* WhatsApp (link-based)  
+* WhatsApp (link-based)
 * SMS fallback (e.g. Twilio)
+
+### **2.4 AI Service Layer**
+
+The AI layer enables natural language interaction and proactive assistance.
+
+**Components:**
+
+* **LLM Integration** — External AI service (e.g., Claude API) for natural language understanding and response generation
+* **Voice-to-Text** — Browser-native Web Speech API for voice input (no external service required)
+* **AI Cloud Function** — Mediates between client and LLM, enforces context boundaries
+
+**Architectural Boundaries:**
+
+* AI has **read-only access** to user's club data (rosters, proposals, shows)
+* AI **cannot mutate state** directly — all actions require user confirmation and execute via existing Cloud Functions
+* AI responses are **advisory only** — compliance decisions remain computed, not AI-generated
+* AI context is **scoped to authenticated user's club** — no cross-club data leakage
+
+**AI Capabilities (MVP):**
+
+* Parse natural language match requests ("Find a match for Jake, 72kg")
+* Explain match suggestions and compliance reasoning
+* Surface relevant actionable items proactively
+* Answer questions about boxer/club data in context
+
+**AI Non-Capabilities (MVP):**
+
+* No autonomous actions (all require user confirmation)
+* No access to other clubs' private data
+* No EB rule interpretation beyond embedded compliance logic
 
 ---
 
@@ -269,9 +305,18 @@ User → claim request → admin approval → club active
 
 CSV upload → parse → draft boxers → explicit confirmation → active
 
-### **7.3 Matchmaking**
+### **7.3 Matchmaking (AI-Driven)**
 
-Query by category \+ weight → age filter → compliance shortlist
+**User-initiated (via AI bar):**
+Natural language request → AI parses intent → Firestore query → compliance filter → AI presents shortlist with reasoning
+
+**AI-proactive (via inbox):**
+AI monitors roster + open slots → identifies potential matches → surfaces actionable cards → user reviews and acts
+
+**Technical flow (unchanged):**
+1. Firestore queries retrieve broad candidate sets using static fields
+2. Compliance filtering (age, experience, EB rules) computed client-side or in Cloud Functions
+3. AI layer handles presentation and explanation only — does not modify compliance logic
 
 ### **7.4 Proposal Flow**
 
@@ -509,7 +554,16 @@ This section is authoritative. If any implementation decision conflicts with thi
 
 ## **Architecture Status**
 
-**Architecture v1 — Complete & Locked**
+**Architecture v1.1 — Updated**
 
 This document, together with the PRD, defines the authoritative blueprint for FirstBell MVP.
+
+---
+
+## **Change Log**
+
+| Date | Version | Changes | Author |
+|------|---------|---------|--------|
+| 2026-01-06 | 1.1 | Added AI-first interaction as core characteristic. Added Section 2.4 (AI Service Layer) defining LLM integration, architectural boundaries, and AI capabilities/limitations. Updated Section 2.1 (Client) with AI bar and voice input. Updated Section 7.3 (Matchmaking) with AI-driven workflow. | Winston (Architect) |
+| — | 1.0 | Initial architecture document | — |
 

@@ -1,10 +1,10 @@
-# **FirstBell MVP — Sprint Plan v1.1**
+# **FirstBell MVP — Sprint Plan v1.2**
 
-**Role:** Scrum Master  
-**Inputs:** PRD \+ Architecture v1 \+ Epics & Stories v1.1  
+**Role:** Scrum Master
+**Inputs:** PRD v1.1 + Architecture v1.1 + Epics & Stories v1.4
 **Goal:** De-risk the core value loop as early as possible
 
-This plan supersedes Sprint Plan v0.1.
+This plan supersedes Sprint Plan v1.1.
 
 ---
 
@@ -35,6 +35,7 @@ The Code Execution Brief defines **Phases** (technical build order). This Sprint
 | Phase 2 — Club Claim Flow | Sprint 1 | Epic 2.1, 2.2, 3.2 |
 | Phase 3 — Roster & Boxer | Sprint 2 | Epic 4.1, 4.2, 4.3 |
 | Phase 4 — Discovery | Sprint 3 | Epic 5.1, 6.1 |
+| **Phase 4.5 — AI Integration** | **Sprint 3.5** | **Epic 11.1–11.5 (AI-first UI)** |
 | Phase 5 — Proposals | Sprint 4 | Epic 7.1, 7.2, 9.3 |
 | Phase 6 — Shows & Slots | Sprint 5 | Epic 8.1, 8.2, 8.3 |
 | Phase 6.5 — Bout Results | Sprint 5.5 | Epic 10.1–10.4 |
@@ -117,13 +118,40 @@ Phase 1 (Core Data Skeleton) from the Code Execution Brief is absorbed into this
 
 ### **Included Stories**
 
-* Epic 5.1 — Browse Other Clubs’ Boxers  
-* Epic 6.1 — Match a Boxer
+* Epic 5.1 — Browse Other Clubs' Boxers
+* Epic 6.1 — Match a Boxer (AI-first interaction)
 
 ### **Exit Criteria**
 
-* Viable opponents surfaced  
+* Viable opponents surfaced
 * Non-compliant matches never displayed
+
+---
+
+## **Sprint 3.5 — AI-First Frontend & Voice**
+
+**Objective:** Deliver the AI-first user experience that differentiates FirstBell.
+
+### **Included Stories**
+
+* Epic 11.1 — PWA Shell & Navigation
+* Epic 11.2 — AI Bar (Text Input)
+* Epic 11.3 — Voice Input Integration
+* Epic 11.4 — AI Inbox (Proactive Cards)
+* Epic 11.5 — AI Cloud Function Integration
+
+### **Exit Criteria**
+
+* Users can interact via natural language (text and voice)
+* AI surfaces proactive match suggestions
+* Traditional navigation available as fallback
+* AI cannot mutate state without user confirmation
+
+### **Dependencies**
+
+* Requires Sprint 3 completion (matchmaking data available)
+* AI Cloud Function mediates all LLM interactions
+* Voice uses browser-native Web Speech API
 
 ---
 
@@ -205,14 +233,21 @@ MVP is complete when the following loop works end-to-end:
 
 * Club claimed
 * Roster confirmed
-* Match found
+* **Match found via AI-first interface (text or voice)**
 * Proposal sent and accepted via deep link
 * Show created with slots filled
 * Bout results recorded after show
 * Boxer W/L records updated automatically
 * Admin can audit and intervene (including result corrections beyond 7 days)
+* **AI proactively surfaces actionable suggestions**
 
 ---
 
-**Sprint Plan v1.3 — Added Phase/Sprint alignment, Phase 1 absorption into Sprint 0**
+## **Change Log**
+
+| Date | Version | Changes | Author |
+|------|---------|---------|--------|
+| 2026-01-06 | 1.2 | Added Sprint 3.5 (AI-First Frontend). Updated Phase alignment table with Phase 4.5. Updated authority refs to v1.1. Updated MVP exit criteria for AI. | Bob (SM) |
+| — | 1.1 | Added Phase/Sprint alignment, Phase 1 absorption into Sprint 0 | — |
+| — | 1.0 | Initial sprint plan | — |
 
