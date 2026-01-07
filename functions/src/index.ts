@@ -48,6 +48,11 @@ export { initiateRosterUpload } from "./roster/initiateRosterUpload";
 export { confirmRoster } from "./roster/confirmRoster";
 export { updateBoxer } from "./roster/updateBoxer";
 
+// ═══════════════════════════════════════════
+// DISCOVERY FUNCTIONS (Story 5.1)
+// ═══════════════════════════════════════════
+export { searchBoxers } from "./discovery/searchBoxers";
+
 /**
  * Helper: Check if the proposal system is paused
  * Required in: createProposal, respondToProposal
