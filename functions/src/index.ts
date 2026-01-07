@@ -53,6 +53,11 @@ export { updateBoxer } from "./roster/updateBoxer";
 // ═══════════════════════════════════════════
 export { searchBoxers } from "./discovery/searchBoxers";
 
+// ═══════════════════════════════════════════
+// MATCHMAKING FUNCTIONS (Story 6.1)
+// ═══════════════════════════════════════════
+export { findMatch } from "./matchmaking/findMatch";
+
 /**
  * Helper: Check if the proposal system is paused
  * Required in: createProposal, respondToProposal
