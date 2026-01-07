@@ -40,6 +40,12 @@ export { approveClubClaim } from "./clubs/approveClubClaim";
 export { rejectClubClaim } from "./clubs/rejectClubClaim";
 export { getClubMembers } from "./clubs/getClubMembers";
 
+// ═══════════════════════════════════════════
+// ROSTER FUNCTIONS (Story 4.1)
+// ═══════════════════════════════════════════
+export { processRosterUpload } from "./roster/processRosterUpload";
+export { initiateRosterUpload } from "./roster/initiateRosterUpload";
+
 /**
  * Helper: Check if the proposal system is paused
  * Required in: createProposal, respondToProposal
