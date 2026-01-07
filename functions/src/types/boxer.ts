@@ -127,3 +127,25 @@ export interface RosterCsvRow {
   availability?: string;
   notes?: string;
 }
+
+/**
+ * Story 4.2 - Confirm Roster Types
+ */
+
+/**
+ * Request for confirmRoster callable function
+ * Explicit boxer selection required (no "confirm all" in MVP)
+ */
+export interface ConfirmRosterRequest {
+  clubId: string;
+  boxerIds: string[];  // Explicit selection of boxers to confirm
+}
+
+/**
+ * Response from confirmRoster callable function
+ */
+export interface ConfirmRosterResponse {
+  success: boolean;
+  confirmedCount: number;
+  boxerIds: string[];  // IDs of confirmed boxers
+}

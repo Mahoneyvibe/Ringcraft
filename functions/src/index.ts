@@ -41,10 +41,11 @@ export { rejectClubClaim } from "./clubs/rejectClubClaim";
 export { getClubMembers } from "./clubs/getClubMembers";
 
 // ═══════════════════════════════════════════
-// ROSTER FUNCTIONS (Story 4.1)
+// ROSTER FUNCTIONS (Story 4.1, 4.2)
 // ═══════════════════════════════════════════
 export { processRosterUpload } from "./roster/processRosterUpload";
 export { initiateRosterUpload } from "./roster/initiateRosterUpload";
+export { confirmRoster } from "./roster/confirmRoster";
 
 /**
  * Helper: Check if the proposal system is paused
@@ -70,8 +71,8 @@ export async function checkKillSwitch(): Promise<void> {
  * - rejectClubClaim
  *
  * Phase 3: Roster & Boxer Management
- * - processRosterUpload (Storage trigger)
- * - confirmRoster
+ * - processRosterUpload (Storage trigger) ✓
+ * - confirmRoster ✓
  *
  * Phase 4: Discovery & Matchmaking
  * - (client-side queries with runtime filtering)
