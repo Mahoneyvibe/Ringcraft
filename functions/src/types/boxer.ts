@@ -149,3 +149,44 @@ export interface ConfirmRosterResponse {
   confirmedCount: number;
   boxerIds: string[];  // IDs of confirmed boxers
 }
+
+/**
+ * Story 4.3 - Update Boxer Types
+ */
+
+/**
+ * Editable boxer fields for update operations
+ * Excludes immutable fields: boxerId, createdAt, createdBy
+ * Excludes auto-set fields: updatedAt, lastModifiedBy
+ */
+export interface BoxerUpdates {
+  firstName?: string;
+  lastName?: string;
+  dob?: string;  // ISO date string, converted to Timestamp
+  gender?: BoxerGender;
+  category?: string;
+  declaredWeight?: number;
+  declaredBouts?: number;
+  declaredWins?: number;
+  declaredLosses?: number;
+  dataStatus?: BoxerDataStatus;
+  availability?: BoxerAvailability;
+  notes?: string | null;
+}
+
+/**
+ * Request for updateBoxer callable function
+ */
+export interface UpdateBoxerRequest {
+  clubId: string;
+  boxerId: string;
+  updates: BoxerUpdates;
+}
+
+/**
+ * Response from updateBoxer callable function
+ */
+export interface UpdateBoxerResponse {
+  success: boolean;
+  boxer: Boxer;
+}
