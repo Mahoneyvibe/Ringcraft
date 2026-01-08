@@ -15,5 +15,8 @@ functions/lib/
 .idx/cache/
 .idx/.tmp/
 
+# Build artifacts
+web/dev-dist/
+
 # OS
 .DS_Store
