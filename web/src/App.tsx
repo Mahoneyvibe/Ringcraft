@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { AIProvider } from '@/contexts/AIContext';
 import { AppShell } from '@/components/layout/AppShell';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { InboxPage } from '@/pages/InboxPage';
@@ -20,9 +21,11 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <AppShell>
-                  <InboxPage />
-                </AppShell>
+                <AIProvider>
+                  <AppShell>
+                    <InboxPage />
+                  </AppShell>
+                </AIProvider>
               </ProtectedRoute>
             }
           />
@@ -30,9 +33,11 @@ function App() {
             path="/club"
             element={
               <ProtectedRoute>
-                <AppShell>
-                  <ClubPage />
-                </AppShell>
+                <AIProvider>
+                  <AppShell>
+                    <ClubPage />
+                  </AppShell>
+                </AIProvider>
               </ProtectedRoute>
             }
           />
@@ -40,9 +45,11 @@ function App() {
             path="/browse"
             element={
               <ProtectedRoute>
-                <AppShell>
-                  <BrowsePage />
-                </AppShell>
+                <AIProvider>
+                  <AppShell>
+                    <BrowsePage />
+                  </AppShell>
+                </AIProvider>
               </ProtectedRoute>
             }
           />
@@ -52,9 +59,11 @@ function App() {
             path="*"
             element={
               <ProtectedRoute>
-                <AppShell>
-                  <InboxPage />
-                </AppShell>
+                <AIProvider>
+                  <AppShell>
+                    <InboxPage />
+                  </AppShell>
+                </AIProvider>
               </ProtectedRoute>
             }
           />

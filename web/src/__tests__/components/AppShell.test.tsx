@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { AppShell } from '@/components/layout/AppShell'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { AIProvider } from '@/contexts/AIContext'
 
 // Mock Firebase auth
 vi.mock('@/lib/firebase', () => ({
@@ -14,11 +15,18 @@ vi.mock('@/lib/firebase', () => ({
   },
 }))
 
+// Mock Firebase Functions for AIProvider
+vi.mock('@/lib/functions', () => ({
+  findMatchCallable: vi.fn(),
+}))
+
 function renderWithProviders(ui: React.ReactElement) {
   return render(
     <MemoryRouter>
       <AuthProvider>
-        {ui}
+        <AIProvider>
+          {ui}
+        </AIProvider>
       </AuthProvider>
     </MemoryRouter>
   )
@@ -49,7 +57,7 @@ describe('AppShell', () => {
     )
 
     // AI Bar should have the "Ask anything..." placeholder
-    expect(screen.getByText('Ask anything...')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Ask anything...')).toBeInTheDocument()
   })
 
   it('renders navigation links', () => {

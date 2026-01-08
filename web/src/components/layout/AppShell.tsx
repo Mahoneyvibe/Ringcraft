@@ -3,7 +3,9 @@ import { AIBar } from './AIBar';
 import { BottomNav } from './BottomNav';
 import { SideNav } from './SideNav';
 import { InstallPrompt } from '@/components/ui/InstallPrompt';
+import { AIChatOverlay, AIChatPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface AppShellProps {
   children: ReactNode;
@@ -12,6 +14,7 @@ interface AppShellProps {
 
 export function AppShell({ children, className }: AppShellProps) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -65,6 +68,9 @@ export function AppShell({ children, className }: AppShellProps) {
 
       {/* PWA install prompt */}
       <InstallPrompt />
+
+      {/* AI Chat - responsive: overlay on mobile, panel on desktop */}
+      {isDesktop ? <AIChatPanel /> : <AIChatOverlay />}
     </div>
   );
 }
