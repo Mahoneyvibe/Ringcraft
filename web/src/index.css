@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* FirstBell Design System Colors */
+    --primary: 213 52% 25%; /* #1E3A5F */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%; /* #F5F5F5 */
+    --secondary-foreground: 220 13% 12%;
+
+    --accent: 217 91% 60%; /* #3B82F6 */
+    --accent-foreground: 0 0% 100%;
+
+    --background: 0 0% 100%;
+    --foreground: 220 13% 12%; /* --neutral-900: #111827 */
+
+    --muted: 220 13% 96%; /* --neutral-100: #F3F4F6 */
+    --muted-foreground: 215 14% 34%; /* --neutral-600: #4B5563 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 12%;
+
+    --border: 220 13% 83%; /* --neutral-300: #D1D5DB */
+    --input: 220 13% 83%;
+    --ring: 217 91% 60%;
+
+    --destructive: 0 84% 60%; /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+  }
+}
+
+/* Typography utilities */
+.text-h1 {
+  @apply text-[1.75rem] leading-[2.25rem] font-bold;
+}
+
+.text-h2 {
+  @apply text-[1.5rem] leading-[2rem] font-semibold;
+}
+
+.text-h3 {
+  @apply text-[1.25rem] leading-[1.75rem] font-semibold;
+}
+
+/* Touch target utility */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}

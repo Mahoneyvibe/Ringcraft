@@ -24,7 +24,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "public",
+    "public": "web/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -39,6 +39,9 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "predeploy": [
+      "npm --prefix web run build"
     ]
   },
   "emulators": {
