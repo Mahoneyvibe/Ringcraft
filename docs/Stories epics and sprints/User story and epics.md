@@ -467,8 +467,8 @@ Deliver the AI-first user experience that differentiates FirstBell, enabling nat
 * Tap-to-speak button on AI bar
 * Uses browser-native Web Speech API
 * Visual feedback during listening (pulsing indicator)
-* Transcribed text sent to AI for processing
-* Works on supported mobile browsers
+* Transcribed text appears in input for review before sending
+* Works on supported browsers (mobile and desktop)
 
 ---
 
@@ -507,12 +507,13 @@ Deliver the AI-first user experience that differentiates FirstBell, enabling nat
 
 ## **Status**
 
-**Epics & Stories v1.5 — Story 3.2 AC 2 corrected for security model alignment.**
+**Epics & Stories v1.6 — Story 11.3 ACs updated for better UX and desktop support.**
 
 ## **Change Log**
 
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
+| 2026-01-13 | 1.6 | Story 11.3: AC4 updated for review-before-send UX, AC5 expanded to include desktop browsers | Sarah (PO) |
 | 2026-01-06 | 1.5 | Story 3.2 AC 2 corrected: any authenticated user can view members (aligned with security model) | Quinn (QA) |
 | 2026-01-06 | 1.4 | Added Epic 11 (AI-First Frontend & Voice). Updated Story 6.1 for AI-first interaction. Updated authority refs to v1.1. | Bob (SM) |
 | — | 1.3 | Added Sprint/Phase alignment note | — |
