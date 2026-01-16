@@ -1,7 +1,9 @@
-import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react';
-import { Bot, Mic, Send } from 'lucide-react';
+import { useState, useRef, useCallback, type FormEvent, type KeyboardEvent } from 'react';
+import { Bot, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAI } from '@/hooks/useAI';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { VoiceInputButton, type VoiceButtonState } from '@/components/ai/VoiceInputButton';
 
 interface AIBarProps {
   className?: string;
@@ -12,6 +14,49 @@ export function AIBar({ className }: AIBarProps) {
   const { isLoading, openChat, sendMessage } = useAI();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Handle final transcript from speech recognition
+  const handleFinalTranscript = useCallback((transcript: string) => {
+    setValue(transcript);
+    // Focus input after transcript is received
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }, []);
+
+  const {
+    isListening,
+    interimTranscript,
+    error: speechError,
+    isSupported: isSpeechSupported,
+    startListening,
+    stopListening,
+  } = useSpeechRecognition({ onFinalTranscript: handleFinalTranscript });
+
+  // Determine voice button state
+  const getVoiceButtonState = (): VoiceButtonState => {
+    if (!isSpeechSupported) return 'unsupported';
+    if (speechError) return 'error';
+    if (isListening) return 'listening';
+    return 'idle';
+  };
+
+  const handleVoiceClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+    // ESC cancels voice input
+    if (e.key === 'Escape' && isListening) {
+      stopListening();
+    }
+  };
+
   const handleSubmit = async (e?: FormEvent) => {
     e?.preventDefault();
     const trimmed = value.trim();
@@ -20,13 +65,6 @@ export function AIBar({ className }: AIBarProps) {
     openChat();
     setValue('');
     await sendMessage(trimmed);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
   };
 
   const handleInputFocus = () => {
@@ -50,34 +88,33 @@ export function AIBar({ className }: AIBarProps) {
         <Bot className="h-6 w-6" aria-hidden="true" />
       </div>
 
-      {/* Input field */}
-      <input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onFocus={handleInputFocus}
-        placeholder="Ask anything..."
-        disabled={isLoading}
-        className={cn(
-          'flex-1 h-9 px-3 rounded-md bg-muted text-sm border-0',
-          'focus:outline-none focus:ring-2 focus:ring-primary/20',
-          'disabled:opacity-50'
-        )}
-        aria-label="Ask AI assistant"
-      />
+      {/* Input field - shows interim transcript while listening */}
+      <div className="relative flex-1">
+        <input
+          ref={inputRef}
+          type="text"
+          value={isListening && interimTranscript ? interimTranscript : value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={handleInputFocus}
+          placeholder={isListening ? 'Listening...' : 'Ask anything...'}
+          disabled={isLoading || isListening}
+          className={cn(
+            'w-full h-9 px-3 rounded-md bg-muted text-sm border-0',
+            'focus:outline-none focus:ring-2 focus:ring-primary/20',
+            'disabled:opacity-50',
+            // Interim transcript styling - lighter opacity
+            isListening && interimTranscript && 'text-muted-foreground'
+          )}
+          aria-label="Ask AI assistant"
+        />
+      </div>
 
-      {/* Mic button (disabled for Story 11.3) */}
-      <button
-        type="button"
-        className="touch-target flex-shrink-0 p-2 rounded-md text-primary opacity-50 cursor-not-allowed hover:bg-muted"
-        disabled
-        title="Voice input coming soon"
-        aria-label="Voice input - coming soon"
-      >
-        <Mic className="h-5 w-5" aria-hidden="true" />
-      </button>
+      {/* Voice input button */}
+      <VoiceInputButton
+        state={getVoiceButtonState()}
+        onClick={handleVoiceClick}
+      />
 
       {/* Send button */}
       <button

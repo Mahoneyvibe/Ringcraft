@@ -19,6 +19,23 @@ vi.mock('@/hooks/useFindMatch', () => ({
   }),
 }));
 
+// Mock useSpeechRecognition hook for voice input tests
+const mockStartListening = vi.fn();
+const mockStopListening = vi.fn();
+const mockSpeechRecognition = {
+  isListening: false,
+  interimTranscript: '',
+  error: null,
+  isSupported: true,
+  startListening: mockStartListening,
+  stopListening: mockStopListening,
+  clearError: vi.fn(),
+};
+
+vi.mock('@/hooks/useSpeechRecognition', () => ({
+  useSpeechRecognition: () => mockSpeechRecognition,
+}));
+
 // Wrapper component for AIBar with context
 function AIBarWithProvider() {
   return (
@@ -31,9 +48,14 @@ function AIBarWithProvider() {
 describe('AIBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset mock state
+    mockSpeechRecognition.isListening = false;
+    mockSpeechRecognition.interimTranscript = '';
+    mockSpeechRecognition.error = null;
+    mockSpeechRecognition.isSupported = true;
   });
 
-  // Test 7.6: AI Bar accepts text input and shows mic icon (disabled)
+  // Test: AI Bar accepts text input
   it('accepts text input', async () => {
     const user = userEvent.setup();
     render(<AIBarWithProvider />);
@@ -45,13 +67,23 @@ describe('AIBar', () => {
     expect(input).toHaveValue('Find a match for Jake');
   });
 
-  it('renders disabled mic icon with tooltip', () => {
+  // Test 7.5: Mic button starts speech recognition on click
+  it('renders voice input button in idle state', () => {
     render(<AIBarWithProvider />);
 
-    const micButton = screen.getByRole('button', { name: /voice input - coming soon/i });
+    const micButton = screen.getByRole('button', { name: /start voice input/i });
     expect(micButton).toBeInTheDocument();
-    expect(micButton).toBeDisabled();
-    expect(micButton).toHaveAttribute('title', 'Voice input coming soon');
+    expect(micButton).not.toBeDisabled();
+  });
+
+  it('calls startListening when voice button clicked', async () => {
+    const user = userEvent.setup();
+    render(<AIBarWithProvider />);
+
+    const micButton = screen.getByRole('button', { name: /start voice input/i });
+    await user.click(micButton);
+
+    expect(mockStartListening).toHaveBeenCalledTimes(1);
   });
 
   it('enables send button when input has text', async () => {
@@ -107,5 +139,25 @@ describe('AIBar', () => {
     // Bot icon should be in the AI Bar
     const icons = document.querySelectorAll('[aria-hidden="true"]');
     expect(icons.length).toBeGreaterThan(0);
+  });
+
+  // Test 7.14: Unsupported browser shows disabled button
+  it('shows disabled voice button when speech not supported', () => {
+    mockSpeechRecognition.isSupported = false;
+    render(<AIBarWithProvider />);
+
+    const micButton = screen.getByRole('button', {
+      name: /voice input not supported on this browser/i,
+    });
+    expect(micButton).toBeDisabled();
+  });
+
+  // Test 7.17: Voice input works in AIBar
+  it('shows listening placeholder when listening', () => {
+    mockSpeechRecognition.isListening = true;
+    render(<AIBarWithProvider />);
+
+    const input = screen.getByRole('textbox', { name: /ask ai assistant/i });
+    expect(input).toHaveAttribute('placeholder', 'Listening...');
   });
 });

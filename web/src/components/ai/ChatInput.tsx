@@ -1,6 +1,8 @@
-import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from 'react';
-import { Mic, Send } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback, type FormEvent, type KeyboardEvent } from 'react';
+import { Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { VoiceInputButton, type VoiceButtonState } from '@/components/ai/VoiceInputButton';
 
 interface ChatInputProps {
   onSubmit: (message: string) => void;
@@ -20,11 +22,43 @@ export function ChatInput({
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Handle final transcript from speech recognition
+  const handleFinalTranscript = useCallback((transcript: string) => {
+    setValue(transcript);
+    // Focus input after transcript is received
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }, []);
+
+  const {
+    isListening,
+    interimTranscript,
+    error: speechError,
+    isSupported: isSpeechSupported,
+    startListening,
+    stopListening,
+  } = useSpeechRecognition({ onFinalTranscript: handleFinalTranscript });
+
   useEffect(() => {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus();
     }
   }, [autoFocus]);
+
+  // Determine voice button state
+  const getVoiceButtonState = (): VoiceButtonState => {
+    if (!isSpeechSupported) return 'unsupported';
+    if (speechError) return 'error';
+    if (isListening) return 'listening';
+    return 'idle';
+  };
+
+  const handleVoiceClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -39,6 +73,10 @@ export function ChatInput({
       e.preventDefault();
       handleSubmit(e);
     }
+    // ESC cancels voice input
+    if (e.key === 'Escape' && isListening) {
+      stopListening();
+    }
   };
 
   return (
@@ -49,25 +87,24 @@ export function ChatInput({
       <input
         ref={inputRef}
         type="text"
-        value={value}
+        value={isListening && interimTranscript ? interimTranscript : value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        disabled={isLoading}
-        className="flex-1 h-10 px-3 rounded-md bg-muted text-sm border-0 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+        placeholder={isListening ? 'Listening...' : placeholder}
+        disabled={isLoading || isListening}
+        className={cn(
+          'flex-1 h-10 px-3 rounded-md bg-muted text-sm border-0 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50',
+          // Interim transcript styling - lighter opacity
+          isListening && interimTranscript && 'text-muted-foreground'
+        )}
         aria-label="Message input"
       />
 
-      {/* Mic button (disabled) */}
-      <button
-        type="button"
-        className="touch-target flex-shrink-0 p-2 rounded-md text-primary opacity-50 cursor-not-allowed"
-        disabled
-        title="Voice input coming soon"
-        aria-label="Voice input - coming soon"
-      >
-        <Mic className="h-5 w-5" aria-hidden="true" />
-      </button>
+      {/* Voice input button */}
+      <VoiceInputButton
+        state={getVoiceButtonState()}
+        onClick={handleVoiceClick}
+      />
 
       {/* Send button */}
       <button
