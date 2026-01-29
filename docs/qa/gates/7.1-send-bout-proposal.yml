@@ -1,0 +1,67 @@
+schema: 1
+story: '7.1'
+story_title: 'Send Bout Proposal'
+gate: PASS
+status_reason: 'Story well-structured with full AC traceability (10/10), 41 planned tests, strong security model, and exact architecture alignment. REC-001 (transaction read clarification) is advisory, not blocking.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-01-29T00:00:00Z'
+
+waiver: { active: false }
+
+top_issues:
+  - id: 'REC-001'
+    severity: low
+    finding: 'Task 2.17 transaction does not explicitly require validation reads (Tasks 2.5-2.12) to use transaction.get() — potential TOCTOU on slot status if reads happen outside transaction'
+    suggested_action: 'Add note to Task 2.17: all document reads for validation must use transaction.get() within the transaction'
+    suggested_owner: sm
+
+risk_summary:
+  totals: { critical: 0, high: 0, medium: 1, low: 4 }
+  highest:
+    area: 'Transaction TOCTOU on slot status'
+    score: 6
+    mitigation: 'Slot read must be inside Firestore transaction using transaction.get()'
+  recommendations:
+    must_fix: []
+    monitor:
+      - 'Ensure slot status check is within transaction (REC-001)'
+      - 'Track concurrent proposal attempts in production logs'
+
+quality_score: 90
+expires: '2026-02-12T00:00:00Z'
+
+evidence:
+  tests_reviewed: 41
+  risks_identified: 6
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Auth + club membership; kill switch; time-bound club-bound tokens; Firestore rules prevent client writes'
+  performance:
+    status: PASS
+    notes: 'No LLM calls; single Firestore transaction; scheduled function batches in 500s'
+  reliability:
+    status: PASS
+    notes: 'Atomic transactions; scheduled cleanup for expired proposals; clear error messages'
+  maintainability:
+    status: PASS
+    notes: 'Clean module separation; follows established patterns; 41 tests planned'
+
+recommendations:
+  immediate:
+    - action: 'Clarify that validation reads (show, slot, boxer) must use transaction.get() inside the Firestore transaction to prevent TOCTOU race conditions'
+      refs: ['docs/stories/7.1.story.md#task-2.17']
+  future:
+    - action: 'Consider adding non-blocking warning when proposing injured/unavailable boxer'
+      refs: ['docs/stories/7.1.story.md#task-2.8']
+    - action: 'Update Firebase implementation plan: withdrawProposal also writes to deeplinkTokens (not just proposals, slots, auditLogs)'
+      refs: ['docs/architecture/Firebase implementation plan.md#2.1']
+
+history:
+  - at: '2026-01-29T00:00:00Z'
+    gate: PASS
+    note: 'Pre-implementation review — story design approved with REC-001 advisory'
